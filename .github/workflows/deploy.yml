@@ -1,0 +1,65 @@
+# Pull requests into main: build and test (the check a PR must pass).
+# Pushes to main (a merged PR): build, test, then deploy to GitHub Pages.
+name: CI / Deploy
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time; a newer push to main cancels a pending one.
+# PR runs are grouped per PR so a new commit cancels the previous check.
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'pages' }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Test
+        run: npx ng test --watch=false
+
+      # The base href must match the repo name: the site lives at /haven-the-journal/.
+      - name: Build
+        run: npx ng build --base-href /haven-the-journal/
+
+      # Deep links work on the first visit, before the service worker is installed.
+      - name: Add SPA fallback
+        run: cp dist/haven-the-journal/browser/index.html dist/haven-the-journal/browser/404.html
+
+      - name: Upload site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/haven-the-journal/browser
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
