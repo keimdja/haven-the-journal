@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { Icon } from '../../shared/ui/icon/icon';
+import { ICON_NAMES } from '../../shared/ui/icon/icons';
 import { StyleguideSection } from './styleguide-section';
 
 /**
@@ -8,7 +10,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [StyleguideSection],
+  imports: [Icon, StyleguideSection],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -28,8 +30,32 @@ import { StyleguideSection } from './styleguide-section';
           <p class="text-label uppercase text-ink-soft">Pick up where you left off</p>
         </div>
       </app-styleguide-section>
+
+      <app-styleguide-section heading="Icons" note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them.">
+        @for (name of iconNames; track name) {
+          <figure class="flex w-20 flex-col items-center gap-2 text-ink">
+            <app-icon [name]="name" [size]="24" />
+            <figcaption class="text-stamp text-ink-soft">{{ name }}</figcaption>
+          </figure>
+        }
+      </app-styleguide-section>
+
+      <app-styleguide-section heading="Icon sizes and colours" note="16, 20 and 24 px; olive and clay through text colour.">
+        <div class="flex items-center gap-4 text-ink">
+          <app-icon name="pen" [size]="16" />
+          <app-icon name="pen" />
+          <app-icon name="pen" [size]="24" />
+        </div>
+        <div class="flex items-center gap-4">
+          <app-icon class="text-olive" name="six-dots" [size]="22" />
+          <app-icon class="text-olive" name="check" [size]="14" [strokeWidth]="2" />
+          <app-icon class="text-clay-text" name="trash" />
+        </div>
+      </app-styleguide-section>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Styleguide {}
+export class Styleguide {
+  protected readonly iconNames = ICON_NAMES;
+}
