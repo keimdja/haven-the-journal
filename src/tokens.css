@@ -1,0 +1,76 @@
+/*
+ * Haven design tokens, from the "Foundations & tokens" board (Design foundations v1).
+ * Tailwind turns each one into a CSS variable and a utility class:
+ * --color-ivory → bg-ivory / text-ivory / border-ivory, --text-writing → text-writing, etc.
+ * Components use these names only, never hex codes.
+ *
+ * Spacing has no tokens: Tailwind's 4px step already matches 4·8·12·16·24·32·48·64
+ * (p-1, p-2, p-3, p-4, p-6, p-8, p-12, p-16).
+ */
+@theme {
+  /* Surfaces */
+  --color-ivory: #f7f4ed;       /* bg/base */
+  --color-paper: #fbf9f4;       /* writing surface, sheets */
+  --color-cream: #f0ebe1;       /* tonal bands, hover */
+  --color-cream-deep: #e9e3d7;  /* row hover on cream bands */
+  --color-hairline: #e3ddd1;    /* dividers */
+  --color-hairline-soft: #ece6db; /* settings row dividers */
+  --color-divider: #e0d9cc;     /* stage bar "ahead", band separators */
+  --color-page-line: #e6e0d4;   /* writing page border */
+  --color-taupe-line: #cfc6b6;  /* control borders */
+  --color-taupe: #a89c8a;       /* empty dots, unchecked boxes */
+  --color-taupe-soft: #b7aa98;  /* hover underline, saving dot */
+  --color-segment-ring: #ddd5c7; /* lifted segment outline */
+  --color-switch-off: #c9c0b1;
+  --color-handle: #d6cec0;      /* bottom sheet grab handle */
+
+  /* Text */
+  --color-ink: #383831;         /* text, 11.2:1 */
+  --color-ink-soft: #66655e;    /* secondary, 5.4:1 */
+  --color-ink-muted: #55544d;   /* prompts, inactive segment */
+  --color-placeholder: #8f8b81; /* hints only */
+
+  /* Action + meaning: olive is the only action colour */
+  --color-olive: #59664f;       /* primary, links, focus, 5.6:1 */
+  --color-olive-deep: #4a5542;  /* hover / pressed */
+  --color-olive-ink: #3f4a37;   /* text on sage tint */
+  --color-sage: #899780;        /* current step, decor */
+  --color-sage-tint: #e6e9df;   /* selected fill */
+  --color-sage-wash: #eef0e8;   /* selected pattern row */
+  --color-clay: #c58f7a;        /* draft dot, warm accents */
+  --color-clay-tint: #f1e4de;   /* heavier feelings */
+  --color-clay-text: #7a4634;
+  --color-lavender: #dcd7e1;    /* reflection marker */
+  --color-lavender-text: #5e5868;
+  --color-lavender-dot: #7c7488; /* the six-dot reflection tag */
+  --color-error: #a2483a;       /* destructive only */
+  --color-error-deep: #8e3d31;  /* destructive hover */
+  --color-error-tint: #f4e2dc;
+
+  /* Type: Fraunces for reflection, DM Sans for interface */
+  --font-reflect: 'Fraunces', Georgia, serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+
+  --text-display: 48px;   --text-display--line-height: 1.08;   /* desktop greeting */
+  --text-greeting: 34px;  --text-greeting--line-height: 1.12;  /* mobile greeting, page titles */
+  --text-question: 30px;  --text-question--line-height: 1.15;
+  --text-entry-title: 18px; --text-entry-title--line-height: 1.3;
+  --text-option: 21px;    --text-option--line-height: 1.2;     /* start rows, larger titles */
+  --text-writing: 18px;   --text-writing--line-height: 1.72;
+  --text-prompt: 15px;    --text-prompt--line-height: 1.55;    /* use with italic */
+  --text-ui: 15px;        --text-ui--line-height: 1.5;
+  --text-meta: 13px;      --text-meta--line-height: 1.5;
+  --text-label: 12px;     --text-label--letter-spacing: 0.08em; /* use with uppercase */
+  --text-stamp: 11px;     --text-stamp--letter-spacing: 0.06em; /* "TUE" under the date */
+
+  /* Radius: 6 chips, checks · 10 buttons, inputs · 14 writing page, bands · 20 sheets */
+  --radius-chip: 6px;
+  --radius-control: 10px;
+  --radius-page: 14px;
+  --radius-sheet: 20px;
+
+  /* Elevation: flat by default; lifted for the selected segment, overlay for sheets only */
+  --shadow-lifted: 0 1px 2px rgb(56 56 49 / 0.1), 0 0 0 1px var(--color-segment-ring);
+  --shadow-knob: 0 1px 2px rgb(56 56 49 / 0.25);
+  --shadow-overlay: 0 -8px 30px rgb(46 45 39 / 0.1);
+}

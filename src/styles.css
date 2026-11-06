@@ -1,3 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@import './tokens.css';
+
+/* Page-wide defaults from the Foundations board. Components style themselves with utilities. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ivory font-ui text-ui text-ink antialiased;
+  }
+
+  a {
+    @apply text-olive transition-colors hover:text-olive-deep;
+  }
+
+  /* One focus ring everywhere, shown for keyboard focus only. */
+  :focus-visible {
+    @apply rounded-chip outline-2 outline-offset-3 outline-olive;
+  }
+
+  ::placeholder {
+    @apply text-placeholder;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
