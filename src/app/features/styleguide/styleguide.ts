@@ -5,6 +5,7 @@ import { Button } from '../../shared/ui/button/button';
 import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
 import { Icon } from '../../shared/ui/icon/icon';
+import { SaveStatus } from '../../shared/ui/save-status/save-status';
 import { SegmentedControl } from '../../shared/ui/segmented-control/segmented-control';
 import { SixDots } from '../../shared/ui/six-dots/six-dots';
 import { StageBar } from '../../shared/ui/stage-bar/stage-bar';
@@ -25,6 +26,7 @@ import { StyleguideSection } from './styleguide-section';
     CheckRow,
     Chip,
     Icon,
+    SaveStatus,
     SegmentedControl,
     SixDots,
     StageBar,
@@ -186,6 +188,19 @@ import { StyleguideSection } from './styleguide-section';
       </app-styleguide-section>
 
       <app-styleguide-section
+        heading="Save status"
+        note="In the editor and reflection headers. Try again only appears when saving failed."
+      >
+        <div class="flex flex-col gap-3">
+          <app-save-status state="saving" />
+          <app-save-status state="saved" />
+          <app-save-status state="offline" />
+          <app-save-status state="error" (retry)="retries.set(retries() + 1)" />
+          <p class="text-meta text-ink-soft">Retries: {{ retries() }}</p>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
         heading="Icons"
         note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
       >
@@ -225,4 +240,5 @@ export class Styleguide {
   ] as const;
   protected readonly language = signal<'en' | 'es'>('en');
   protected readonly hidePreviews = signal(false);
+  protected readonly retries = signal(0);
 }
