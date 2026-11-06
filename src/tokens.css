@@ -20,7 +20,7 @@
   --color-taupe-line: #cfc6b6;  /* control borders */
   --color-taupe: #a89c8a;       /* empty dots, unchecked boxes */
   --color-taupe-soft: #b7aa98;  /* hover underline, saving dot */
-  --color-segment-ring: #ddd5c7; /* lifted segment outline */
+  --color-segment-ring: #ddd5c7; /* lifted segment outline, text field border */
   --color-switch-off: #c9c0b1;
   --color-handle: #d6cec0;      /* bottom sheet grab handle */
 

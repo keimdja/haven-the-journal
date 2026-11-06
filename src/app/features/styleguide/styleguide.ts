@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
+import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
 import { StyleguideSection } from './styleguide-section';
 
@@ -12,7 +13,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [BrandMark, Button, Icon, StyleguideSection],
+  imports: [BrandMark, Button, Icon, StyleguideSection, TextField, TextFieldInput],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -67,6 +68,26 @@ import { StyleguideSection } from './styleguide-section';
           <button appButton [wide]="true">Save reflection</button>
           <a appButton="secondary" href="#" [wide]="true">Keep entry</a>
           <button appButton="danger" [wide]="true">Delete</button>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Text fields"
+        note="Default, error, reflect (entry title) and search. Focus shows the olive border and sage ring."
+      >
+        <div class="flex w-full max-w-sm flex-col gap-5">
+          <app-text-field label="Email">
+            <input appInput type="email" placeholder="you@example.com" />
+          </app-text-field>
+          <app-text-field label="Email" error="That email looks incomplete.">
+            <input appInput type="email" value="k@example" />
+          </app-text-field>
+          <app-text-field label="Give it a name" hint="(optional)" [reflect]="true">
+            <input appInput type="text" value="The meeting with Ana" placeholder="Untitled" />
+          </app-text-field>
+          <app-text-field label="Search your entries" variant="search">
+            <input appInput type="search" placeholder="Search your entries" />
+          </app-text-field>
         </div>
       </app-styleguide-section>
 
