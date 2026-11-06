@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
+import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
 import { Icon } from '../../shared/ui/icon/icon';
 import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
@@ -14,7 +15,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [BrandMark, Button, Chip, Icon, StyleguideSection, TextField, TextFieldInput],
+  imports: [BrandMark, Button, CheckRow, Chip, Icon, StyleguideSection, TextField, TextFieldInput],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -115,6 +116,17 @@ import { StyleguideSection } from './styleguide-section';
           <app-chip label="Hopeful" [toggle]="true" />
           <app-chip label="Tired" [toggle]="true" />
           <app-chip label="Lonely" [toggle]="true" />
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Check rows"
+        note="Thinking patterns in part 4. The whole row toggles; checked rows get the sage wash."
+      >
+        <div class="flex w-full max-w-md flex-col border-t border-hairline">
+          <app-check-row label="Predicting the future" example="“This is going to go badly.”" />
+          <app-check-row label="Reading minds" example="“They must think I’m…”" [checked]="true" />
+          <app-check-row label="Feelings as facts" example="“I feel it, so it must be true.”" />
         </div>
       </app-styleguide-section>
 
