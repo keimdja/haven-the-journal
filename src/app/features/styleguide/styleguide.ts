@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
 import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
 import { Icon } from '../../shared/ui/icon/icon';
+import { SegmentedControl } from '../../shared/ui/segmented-control/segmented-control';
+import { Switch } from '../../shared/ui/switch/switch';
 import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
 import { StyleguideSection } from './styleguide-section';
@@ -15,7 +17,18 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [BrandMark, Button, CheckRow, Chip, Icon, StyleguideSection, TextField, TextFieldInput],
+  imports: [
+    BrandMark,
+    Button,
+    CheckRow,
+    Chip,
+    Icon,
+    SegmentedControl,
+    StyleguideSection,
+    Switch,
+    TextField,
+    TextFieldInput,
+  ],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -131,6 +144,25 @@ import { StyleguideSection } from './styleguide-section';
       </app-styleguide-section>
 
       <app-styleguide-section
+        heading="Segmented control and switch"
+        note="Settings only. The chosen segment is lifted onto paper; arrow keys move between segments."
+      >
+        <div class="flex w-full max-w-sm flex-col gap-6">
+          <app-segmented-control label="Language" [options]="languages" [(value)]="language" />
+          <div class="flex items-center justify-between gap-4">
+            <span class="flex flex-col gap-0.75">
+              <span id="sg-hide">Hide previews on Home</span>
+              <span class="text-meta text-ink-soft">Show titles only, not what you wrote.</span>
+            </span>
+            <app-switch labelledBy="sg-hide" [(checked)]="hidePreviews" />
+          </div>
+          <p class="text-meta text-ink-soft">
+            Language: {{ language() }} · Hide previews: {{ hidePreviews() ? 'on' : 'off' }}
+          </p>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
         heading="Icons"
         note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
       >
@@ -163,4 +195,11 @@ import { StyleguideSection } from './styleguide-section';
 })
 export class Styleguide {
   protected readonly iconNames = ICON_NAMES;
+
+  protected readonly languages = [
+    { value: 'en', label: 'English' },
+    { value: 'es', label: 'Español' },
+  ] as const;
+  protected readonly language = signal<'en' | 'es'>('en');
+  protected readonly hidePreviews = signal(false);
 }
