@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Icon } from '../../shared/ui/icon/icon';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
 import { StyleguideSection } from './styleguide-section';
@@ -10,7 +11,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [Icon, StyleguideSection],
+  imports: [BrandMark, Icon, StyleguideSection],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -29,6 +30,13 @@ import { StyleguideSection } from './styleguide-section';
           <p>Six gentle questions to look at a moment more closely.</p>
           <p class="text-label uppercase text-ink-soft">Pick up where you left off</p>
         </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section heading="Brand mark" note="Doorway mark. sm for the Home header, md for first visit and the sidebar, lg for login.">
+        <app-brand-mark />
+        <app-brand-mark size="md" [tagline]="true" />
+        <app-brand-mark size="lg" [tagline]="true" />
+        <app-brand-mark size="lg" [wordmark]="false" />
       </app-styleguide-section>
 
       <app-styleguide-section heading="Icons" note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them.">
