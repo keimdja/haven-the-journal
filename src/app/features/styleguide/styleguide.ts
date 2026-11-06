@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
+import { Chip } from '../../shared/ui/chip/chip';
 import { Icon } from '../../shared/ui/icon/icon';
 import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
@@ -13,7 +14,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [BrandMark, Button, Icon, StyleguideSection, TextField, TextFieldInput],
+  imports: [BrandMark, Button, Chip, Icon, StyleguideSection, TextField, TextFieldInput],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -88,6 +89,32 @@ import { StyleguideSection } from './styleguide-section';
           <app-text-field label="Search your entries" variant="search">
             <input appInput type="search" placeholder="Search your entries" />
           </app-text-field>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Chips"
+        note="Tags for chosen feelings: sage for lighter, clay for heavier. Custom feelings are light and removable."
+      >
+        <div class="flex flex-wrap gap-1.5">
+          <app-chip label="Calm" />
+          <app-chip label="Relieved, later" />
+          <app-chip label="Anxious" weight="heavy" />
+          <app-chip label="Frustrated" weight="heavy" />
+          <app-chip label="Embarrassed" [removable]="true" />
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Feeling toggles"
+        note="Pick any, or none. Chosen ones get the sage fill and a check."
+      >
+        <div class="flex flex-wrap gap-2">
+          <app-chip label="Calm" [toggle]="true" [pressed]="true" />
+          <app-chip label="Content" [toggle]="true" [pressed]="true" />
+          <app-chip label="Hopeful" [toggle]="true" />
+          <app-chip label="Tired" [toggle]="true" />
+          <app-chip label="Lonely" [toggle]="true" />
         </div>
       </app-styleguide-section>
 
