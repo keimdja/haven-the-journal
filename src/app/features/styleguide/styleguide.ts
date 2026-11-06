@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
+import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
 import { StyleguideSection } from './styleguide-section';
@@ -11,7 +12,7 @@ import { StyleguideSection } from './styleguide-section';
  */
 @Component({
   selector: 'app-styleguide',
-  imports: [BrandMark, Icon, StyleguideSection],
+  imports: [BrandMark, Button, Icon, StyleguideSection],
   template: `
     <main class="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
       <header class="flex flex-col gap-2">
@@ -25,21 +26,54 @@ import { StyleguideSection } from './styleguide-section';
           <p class="font-reflect text-display">Good evening, K.</p>
           <p class="font-reflect text-question">What did I feel?</p>
           <p class="font-reflect text-entry-title">Sunday at Abuela's</p>
-          <p class="font-reflect text-writing">I want to remember that this is possible on an ordinary day.</p>
-          <p class="font-reflect text-prompt italic text-ink-muted">Was there a thought that kept coming back?</p>
+          <p class="font-reflect text-writing">
+            I want to remember that this is possible on an ordinary day.
+          </p>
+          <p class="font-reflect text-prompt italic text-ink-muted">
+            Was there a thought that kept coming back?
+          </p>
           <p>Six gentle questions to look at a moment more closely.</p>
           <p class="text-label uppercase text-ink-soft">Pick up where you left off</p>
         </div>
       </app-styleguide-section>
 
-      <app-styleguide-section heading="Brand mark" note="Doorway mark. sm for the Home header, md for first visit and the sidebar, lg for login.">
+      <app-styleguide-section
+        heading="Brand mark"
+        note="Doorway mark. sm for the Home header, md for first visit and the sidebar, lg for login."
+      >
         <app-brand-mark />
         <app-brand-mark size="md" [tagline]="true" />
         <app-brand-mark size="lg" [tagline]="true" />
         <app-brand-mark size="lg" [wordmark]="false" />
       </app-styleguide-section>
 
-      <app-styleguide-section heading="Icons" note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them.">
+      <app-styleguide-section
+        heading="Buttons"
+        note="One primary per screen. Danger only inside confirmations."
+      >
+        <button appButton>Continue</button>
+        <button appButton="secondary">Keep as draft</button>
+        <button appButton="quiet"><app-icon name="arrow-left" [size]="18" />Back</button>
+        <button appButton="link">Skip for now</button>
+        <button appButton="danger">Delete</button>
+        <button appButton [disabled]="true">Disabled</button>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Wide buttons"
+        note="Fill the row at 50 px, as on the delete sheet and the review step."
+      >
+        <div class="flex w-full max-w-sm flex-col gap-3">
+          <button appButton [wide]="true">Save reflection</button>
+          <a appButton="secondary" href="#" [wide]="true">Keep entry</a>
+          <button appButton="danger" [wide]="true">Delete</button>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Icons"
+        note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
+      >
         @for (name of iconNames; track name) {
           <figure class="flex w-20 flex-col items-center gap-2 text-ink">
             <app-icon [name]="name" [size]="24" />
@@ -48,7 +82,10 @@ import { StyleguideSection } from './styleguide-section';
         }
       </app-styleguide-section>
 
-      <app-styleguide-section heading="Icon sizes and colours" note="16, 20 and 24 px; olive and clay through text colour.">
+      <app-styleguide-section
+        heading="Icon sizes and colours"
+        note="16, 20 and 24 px; olive and clay through text colour."
+      >
         <div class="flex items-center gap-4 text-ink">
           <app-icon name="pen" [size]="16" />
           <app-icon name="pen" />
