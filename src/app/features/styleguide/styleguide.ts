@@ -6,6 +6,8 @@ import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
 import { Icon } from '../../shared/ui/icon/icon';
 import { SegmentedControl } from '../../shared/ui/segmented-control/segmented-control';
+import { SixDots } from '../../shared/ui/six-dots/six-dots';
+import { StageBar } from '../../shared/ui/stage-bar/stage-bar';
 import { Switch } from '../../shared/ui/switch/switch';
 import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
 import { ICON_NAMES } from '../../shared/ui/icon/icons';
@@ -24,6 +26,8 @@ import { StyleguideSection } from './styleguide-section';
     Chip,
     Icon,
     SegmentedControl,
+    SixDots,
+    StageBar,
     StyleguideSection,
     Switch,
     TextField,
@@ -159,6 +163,25 @@ import { StyleguideSection } from './styleguide-section';
           <p class="text-meta text-ink-soft">
             Language: {{ language() }} · Hide previews: {{ hidePreviews() ? 'on' : 'off' }}
           </p>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Progress"
+        note="Stage bar in the reflection header (done · current · ahead); six dots on draft reflections."
+      >
+        <div class="flex w-full max-w-sm flex-col gap-5">
+          <app-stage-bar [current]="1" />
+          <app-stage-bar [current]="2" />
+          <app-stage-bar [current]="6" />
+          <span class="flex items-center gap-2.5 text-meta text-ink-soft">
+            <app-six-dots [filled]="3" />
+            Reflection · 3 of 6 · Saturday
+          </span>
+          <span class="flex items-center gap-2.5 text-meta text-ink-soft">
+            <app-six-dots [filled]="5" />
+            Reflection · 5 of 6
+          </span>
         </div>
       </app-styleguide-section>
 
