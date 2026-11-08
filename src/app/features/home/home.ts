@@ -10,13 +10,14 @@ import { I18n } from '../../core/i18n/i18n';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { EntryRow } from '../../shared/ui/entry-row/entry-row';
 import { SectionLabel } from '../../shared/ui/section-label/section-label';
+import { EmptyState } from './empty-state/empty-state';
 import { ResumeCard } from './resume-card/resume-card';
 import { StartOptions } from './start-options/start-options';
 
 /** Where you land: today's date, a greeting, the ways to begin, and what's recent. */
 @Component({
   selector: 'app-home',
-  imports: [BrandMark, EntryRow, ResumeCard, RouterLink, SectionLabel, StartOptions],
+  imports: [BrandMark, EmptyState, EntryRow, ResumeCard, RouterLink, SectionLabel, StartOptions],
   templateUrl: './home.html',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,10 @@ export class Home {
   protected readonly preview = entryPreview;
   protected readonly draft = this.repo.newestDraft;
   protected readonly recent = this.repo.recent;
+  /** The welcome is only for an account with nothing in it, once that's known for sure. */
+  protected readonly firstVisit = computed(
+    () => this.repo.loaded() && this.repo.all().length === 0,
+  );
   protected readonly hidePreviews = computed(() => this.profile()?.hidePreviews ?? false);
 
   protected readonly date = computed(() => formatLongDate(this.now, this.i18n.locale()));

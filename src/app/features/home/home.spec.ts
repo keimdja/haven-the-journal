@@ -7,20 +7,34 @@ import type { Entry, Profile } from '../../core/data/models';
 import { ProfileStore } from '../../core/data/profile-store';
 import { Home } from './home';
 
+const entry = (id: string, changes: Partial<Entry> = {}): Entry => ({
+  ...blankEntry('free', new Date(2026, 9, 18, 16, 0)),
+  id,
+  ...changes,
+});
+
 describe('Home', () => {
   beforeEach(() => localStorage.clear());
   afterEach(() => vi.useRealTimers());
 
   function render(
     profile: Partial<Profile> | null = null,
-    { recent = [] as Entry[], draft = undefined as Entry | undefined } = {},
+    { recent = [] as Entry[], draft = undefined as Entry | undefined, loaded = true } = {},
   ) {
     vi.useFakeTimers({ now: new Date(2026, 9, 21, 21, 12), toFake: ['Date'] });
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: ProfileStore, useValue: { profile: signal(profile) } },
-        { provide: EntriesRepo, useValue: { recent: signal(recent), newestDraft: signal(draft) } },
+        {
+          provide: EntriesRepo,
+          useValue: {
+            recent: signal(recent),
+            all: signal(recent),
+            loaded: signal(loaded),
+            newestDraft: signal(draft),
+          },
+        },
       ],
     });
     const fixture = TestBed.createComponent(Home);
@@ -29,13 +43,15 @@ describe('Home', () => {
   }
 
   it('shows today’s date and a greeting by name', () => {
-    const host = render({ displayName: 'K' });
+    const host = render({ displayName: 'K' }, { recent: [entry('a')] });
     expect(host.textContent).toContain('Wednesday, October 21');
     expect(host.querySelector('h1')!.textContent).toContain('Good evening, K.');
   });
 
   it('greets without a name until there is one', () => {
-    expect(render().querySelector('h1')!.textContent).toContain('Good evening.');
+    expect(render(null, { recent: [entry('a')] }).querySelector('h1')!.textContent).toContain(
+      'Good evening.',
+    );
   });
 
   it('starts free writing or a reflection', () => {
@@ -45,12 +61,6 @@ describe('Home', () => {
     expect(links[0].textContent).toContain('Write freely');
     expect(links[1].textContent).toContain('Start a reflection');
     expect(host.querySelector('nav')!.getAttribute('aria-label')).toBe('Start writing');
-  });
-
-  const entry = (id: string, changes: Partial<Entry> = {}): Entry => ({
-    ...blankEntry('free', new Date(2026, 9, 18, 16, 0)),
-    id,
-    ...changes,
   });
 
   it('shows no resume card or recent section when there’s nothing yet', () => {
@@ -94,5 +104,28 @@ describe('Home', () => {
 
     expect(row.textContent).toContain('Sunday');
     expect(row.textContent).not.toContain('The words');
+  });
+
+  describe('first visit', () => {
+    it('welcomes an empty journal with the empty state', () => {
+      const host = render();
+      expect(host.querySelector('h1')!.textContent).toContain('Your space,');
+      expect(host.querySelector('h1 em')!.textContent).toContain('your pace.');
+      expect(host.querySelector('app-empty-state')!.textContent).toContain(
+        'Your entries will gather here.',
+      );
+      expect(host.querySelector('nav')).not.toBeNull();
+    });
+
+    it('greets as usual once there are entries', () => {
+      const host = render(null, { recent: [entry('a')] });
+      expect(host.querySelector('app-empty-state')).toBeNull();
+      expect(host.querySelector('h1')!.textContent).toContain('Good evening');
+    });
+
+    it('doesn’t show the welcome before the journal has loaded', () => {
+      const host = render(null, { loaded: false });
+      expect(host.querySelector('app-empty-state')).toBeNull();
+    });
   });
 });

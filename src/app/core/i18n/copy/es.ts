@@ -23,6 +23,14 @@ export const es: Copy = {
     privacy: 'Tus entradas son privadas y solo se ven desde tu cuenta.',
   },
   home: {
+    firstVisit: {
+      titleLine1: 'Tu espacio,',
+      titleLine2: 'a tu ritmo.',
+      sub: 'No hay una forma correcta de empezar. Unas palabras o varias páginas, lo que hoy necesites.',
+      emptyLabel: 'Tus entradas',
+      emptyTitle: 'Tus entradas se irán reuniendo aquí.',
+      emptySub: 'Todo lo que escribas es solo tuyo. Vuelve cuando quieras.',
+    },
     resume: 'Retoma donde lo dejaste',
     recent: 'Recientes',
     seeAll: 'Ver todo',

@@ -29,6 +29,14 @@ export const en = {
     privacy: 'Your entries are private to your account.',
   },
   home: {
+    firstVisit: {
+      titleLine1: 'Your space,',
+      titleLine2: 'your pace.',
+      sub: 'There’s no right way to begin. A few words or a few pages, whatever today needs.',
+      emptyLabel: 'Your entries',
+      emptyTitle: 'Your entries will gather here.',
+      emptySub: 'Everything you write stays private to you. Come back whenever you’re ready.',
+    },
     resume: 'Pick up where you left off',
     recent: 'Recently',
     seeAll: 'See all',
