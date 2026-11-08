@@ -1,6 +1,7 @@
 <div class="flex flex-col pt-15 lg:pt-16">
   <header class="flex flex-col gap-4 px-6">
     <h1 class="font-reflect text-greeting">{{ t().nav.journal }}</h1>
+    <app-kind-filter [value]="filter()" (valueChange)="setFilter($event)" />
   </header>
 
   @for (group of groups(); track group.key) {

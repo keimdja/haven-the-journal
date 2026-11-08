@@ -168,6 +168,12 @@ export const en = {
     limit: 'That’s as many as one entry can hold.',
   },
   journal: {
+    filter: {
+      label: 'Show',
+      all: 'All',
+      free: 'Free writing',
+      reflection: 'Reflections',
+    },
     empty: 'Nothing here yet. Your entries will appear as you write.',
   },
   settings: {

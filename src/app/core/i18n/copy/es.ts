@@ -164,6 +164,12 @@ export const es: Copy = {
     limit: 'Ya son todas las que caben en una entrada.',
   },
   journal: {
+    filter: {
+      label: 'Mostrar',
+      all: 'Todas',
+      free: 'Escritura libre',
+      reflection: 'Reflexiones',
+    },
     empty: 'Todavía no hay nada aquí. Tus entradas aparecerán a medida que escribas.',
   },
   settings: {
