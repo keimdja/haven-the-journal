@@ -150,6 +150,18 @@ export const es: Copy = {
     bodyLabel: 'Tu entrada',
     bodyPlaceholder: 'Empieza por donde quieras…',
   },
+  feelingPicker: {
+    label: 'Emociones',
+    add: 'Agregar una emoción',
+    edit: 'Editar emociones',
+    heading: '¿Cómo se siente esto?',
+    sub: 'Opcional. Elige las que quieras o ninguna.',
+    done: 'Listo',
+    addOwn: 'Agrega la tuya',
+    addOwnHint: '(pulsa Intro)',
+    remove: 'Quitar',
+    limit: 'Ya son todas las que caben en una entrada.',
+  },
   settings: {
     title: 'Ajustes',
     language: {

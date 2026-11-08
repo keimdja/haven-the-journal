@@ -154,6 +154,18 @@ export const en = {
     bodyLabel: 'Your entry',
     bodyPlaceholder: 'Start wherever you like…',
   },
+  feelingPicker: {
+    label: 'Feelings',
+    add: 'Add a feeling',
+    edit: 'Edit feelings',
+    heading: 'How does this feel?',
+    sub: 'Optional. Choose any, or none.',
+    done: 'Done',
+    addOwn: 'Add your own',
+    addOwnHint: '(press Enter)',
+    remove: 'Remove',
+    limit: 'That’s as many as one entry can hold.',
+  },
   settings: {
     title: 'Settings',
     language: {
