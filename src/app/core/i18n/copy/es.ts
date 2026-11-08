@@ -71,6 +71,18 @@ export const es: Copy = {
     },
   },
   reflect: {
+    review: {
+      title: 'Tu reflexión',
+      intro: 'Reléela si quieres. Nada aquí tiene que estar terminado.',
+      name: 'Ponle un nombre',
+      optional: '(opcional)',
+      edit: 'Editar',
+      write: 'Escribir',
+      editPart: 'Editar parte',
+      writePart: 'Escribir parte',
+      keepDraft: 'Guardar como borrador',
+      save: 'Guardar reflexión',
+    },
     saveExit: 'Guardar y salir',
     nudge: '¿Necesitas una pista?',
     feelingsNote: '¿Algo más sobre cómo se sintió?',

@@ -77,6 +77,18 @@ export const en = {
     },
   } satisfies Record<PatternKey, { label: string; example: string }>,
   reflect: {
+    review: {
+      title: 'Your reflection',
+      intro: 'Read it back if you like. Nothing here needs to be finished.',
+      name: 'Give it a name',
+      optional: '(optional)',
+      edit: 'Edit',
+      write: 'Write',
+      editPart: 'Edit part',
+      writePart: 'Write part',
+      keepDraft: 'Keep as draft',
+      save: 'Save reflection',
+    },
     saveExit: 'Save & exit',
     nudge: 'Need a nudge?',
     feelingsNote: 'Anything else about how it felt?',
