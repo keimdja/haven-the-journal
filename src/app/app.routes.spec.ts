@@ -1,12 +1,18 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import type { Session } from '@supabase/auth-js';
 
 import { routes } from './app.routes';
+import { Auth } from './core/auth/auth';
 
 describe('routes', () => {
-  async function visit(url: string) {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+  async function visit(url: string, session: Session | null = {} as Session) {
+    const auth = { ready: signal(true), session: signal(session) };
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes), { provide: Auth, useValue: auth }],
+    });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(url);
     const root = harness.fixture.nativeElement as HTMLElement;
@@ -32,6 +38,18 @@ describe('routes', () => {
     const { root } = await visit(url);
     expect(root.querySelector(selector)).not.toBeNull();
     expect(root.querySelector('app-shell')).toBeNull();
+  });
+
+  it.each(['/', '/journal', '/write/abc', '/reflect/abc/review'])(
+    'sends %s to login when signed out',
+    async (url) => {
+      expect((await visit(url, null)).url).toBe('/login');
+    },
+  );
+
+  it('shows login without being signed in', async () => {
+    const { root } = await visit('/login', null);
+    expect(root.querySelector('app-login')).not.toBeNull();
   });
 
   it('sends unknown URLs home', async () => {

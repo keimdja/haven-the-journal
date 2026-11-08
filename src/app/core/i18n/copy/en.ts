@@ -8,6 +8,17 @@ import type { ReflectionPartKey } from '../../data/reflection-parts';
  * (No `as const`: the values are plain strings, so Spanish can differ.)
  */
 export const en = {
+  login: {
+    title: 'Sign in',
+    intro: 'Your journal is waiting, just as you left it.',
+    email: 'Email',
+    password: 'Password',
+    submit: 'Continue',
+    submitting: 'Signing in…',
+    missing: 'Enter your email and password.',
+    wrongDetails: 'That email and password don’t match.',
+    failed: 'Couldn’t reach Haven. Check your connection and try again.',
+  },
   nav: {
     label: 'Main',
     home: 'Home',
@@ -151,6 +162,12 @@ export const en = {
     },
     care: 'Haven is a space for personal reflection. It isn’t a substitute for professional care.',
     signOut: 'Sign out',
+    signOutWarning: {
+      heading: 'Sign out before this has synced?',
+      body: 'Some of what you wrote hasn’t reached your account yet. Signing out now erases it from this device, and it can’t be recovered.',
+      stay: 'Stay signed in',
+      confirm: 'Sign out anyway',
+    },
   },
 };
 

@@ -1,4 +1,45 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Sign in</h1>
-  <p class="text-ink-soft">Email and password.</p>
+<main class="flex w-full max-w-sm flex-col gap-8">
+  <app-brand-mark size="lg" [tagline]="true" />
+
+  <header class="flex flex-col gap-2">
+    <h1 class="font-reflect text-question">{{ t().login.title }}</h1>
+    <p class="text-ink-soft">{{ t().login.intro }}</p>
+  </header>
+
+  <form class="flex flex-col gap-5" novalidate (submit)="submit($event)">
+    <app-text-field [label]="t().login.email">
+      <input
+        #emailInput
+        appInput
+        type="email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        autocapitalize="none"
+        spellcheck="false"
+        [value]="email()"
+        (input)="email.set(emailInput.value)"
+      />
+    </app-text-field>
+
+    <app-text-field [label]="t().login.password">
+      <input
+        #passwordInput
+        appInput
+        type="password"
+        name="password"
+        autocomplete="current-password"
+        [value]="password()"
+        (input)="password.set(passwordInput.value)"
+      />
+    </app-text-field>
+
+    @if (errorText(); as message) {
+      <p class="text-meta text-error" role="alert">{{ message }}</p>
+    }
+
+    <button appButton type="submit" class="mt-1" [wide]="true" [disabled]="submitting()">
+      {{ submitting() ? t().login.submitting : t().login.submit }}
+    </button>
+  </form>
 </main>
