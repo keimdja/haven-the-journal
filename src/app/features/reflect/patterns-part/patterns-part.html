@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-2.5">
+  <h1 id="patterns-question" class="font-reflect text-question">{{ question() }}</h1>
+  <p class="text-prompt text-ink-soft">{{ helper() }}</p>
+</div>
+
+<div
+  class="flex flex-col border-t border-hairline"
+  role="group"
+  aria-labelledby="patterns-question"
+>
+  @for (key of keys; track key) {
+    <app-check-row
+      [label]="t().patterns[key].label"
+      [example]="t().patterns[key].example"
+      [checked]="isChecked(key)"
+      (checkedChange)="setChecked(key, $event)"
+    />
+  }
+</div>
+
+<p class="text-meta text-ink-soft">{{ t().reflect.noPatternFits }}</p>

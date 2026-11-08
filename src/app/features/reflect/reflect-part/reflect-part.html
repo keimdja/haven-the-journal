@@ -21,7 +21,12 @@
           (noteChange)="setNote($event)"
         />
       } @else {
-        <h1 class="font-reflect text-question">{{ t().reflect.parts[part.key].question }}</h1>
+        <app-patterns-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [patterns]="entry.patterns"
+          (patternsChange)="setPatterns($event)"
+        />
       }
     </app-reflect-shell>
   }

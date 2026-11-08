@@ -223,4 +223,41 @@ describe('ReflectPart', () => {
       });
     });
   });
+
+  describe('patterns part', () => {
+    it('lists all eleven patterns with their examples, in a named group', async () => {
+      const { host } = await open('r1', '4');
+      expect(host.querySelectorAll('input[type="checkbox"]')).toHaveLength(11);
+      expect(host.textContent).toContain('Reading minds');
+      expect(host.textContent).toContain('“They must think I’m…”');
+      expect(host.textContent).toContain('None of these fit?');
+
+      const group = host.querySelector('[role="group"]')!;
+      const heading = host.querySelector(`#${group.getAttribute('aria-labelledby')}`);
+      expect(heading?.textContent).toContain('What thinking patterns do I recognize?');
+    });
+
+    it('ticks the patterns already chosen', async () => {
+      const { host } = await open('r1', '4', { ...draft, patterns: ['reading_minds'] });
+      const boxes = Array.from(host.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'));
+      expect(boxes.filter((box) => box.checked)).toHaveLength(1);
+      expect(boxes[2].checked).toBe(true);
+    });
+
+    it('saves ticked patterns in the list’s order', async () => {
+      const { repo, fixture, host } = await open('r1', '4');
+      vi.useFakeTimers();
+
+      const boxes = host.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+      boxes[5].click();
+      fixture.detectChanges();
+      boxes[0].click();
+      fixture.detectChanges();
+      await vi.advanceTimersByTimeAsync(AUTOSAVE_MS);
+
+      expect(repo.save.mock.calls[0][0]).toMatchObject({
+        patterns: ['minimize_magnify', 'jumping_to_conclusions'],
+      });
+    });
+  });
 });
