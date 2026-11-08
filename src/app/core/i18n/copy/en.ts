@@ -131,6 +131,16 @@ export const en = {
     draft: 'Draft',
     ofSix: 'of 6',
     edit: 'Edit',
+    delete: {
+      action: 'Delete this entry',
+      heading: 'Delete this entry?',
+      body: 'will be removed from your journal. This can’t be undone.',
+      bodyUntitled: 'This entry will be removed from your journal. This can’t be undone.',
+      wantCopy: 'Want a copy first?',
+      export: 'Export your journal',
+      keep: 'Keep entry',
+      confirm: 'Delete',
+    },
     patterns: 'Thinking patterns',
     feelings: 'Feelings',
     kind: {

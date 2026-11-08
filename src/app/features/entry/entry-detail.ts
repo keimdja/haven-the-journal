@@ -6,13 +6,14 @@ import { formatLongDate, formatTime } from '../../core/i18n/format-date';
 import { I18n } from '../../core/i18n/i18n';
 import { Icon } from '../../shared/ui/icon/icon';
 import { KindTag } from '../../shared/ui/kind-tag/kind-tag';
+import { DeleteEntry } from './delete-entry/delete-entry';
 import { FreeBody } from './free-body/free-body';
 import { ReflectionBody } from './reflection-body/reflection-body';
 
 /** One entry, read back. It follows the list, so a sync from elsewhere shows up here too. */
 @Component({
   selector: 'app-entry-detail',
-  imports: [FreeBody, Icon, KindTag, ReflectionBody, RouterLink],
+  imports: [DeleteEntry, FreeBody, Icon, KindTag, ReflectionBody, RouterLink],
   templateUrl: './entry-detail.html',
   host: { class: 'mx-auto block w-full max-w-2xl pb-12' },
   changeDetection: ChangeDetectionStrategy.OnPush,

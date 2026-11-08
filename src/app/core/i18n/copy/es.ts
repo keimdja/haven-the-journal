@@ -127,6 +127,16 @@ export const es: Copy = {
     draft: 'Borrador',
     ofSix: 'de 6',
     edit: 'Editar',
+    delete: {
+      action: 'Eliminar esta entrada',
+      heading: '¿Eliminar esta entrada?',
+      body: 'se eliminará de tu diario. Esto no se puede deshacer.',
+      bodyUntitled: 'Esta entrada se eliminará de tu diario. Esto no se puede deshacer.',
+      wantCopy: '¿Quieres una copia antes?',
+      export: 'Exporta tu diario',
+      keep: 'Conservar entrada',
+      confirm: 'Eliminar',
+    },
     patterns: 'Patrones de pensamiento',
     feelings: 'Lo que sentí',
     kind: {

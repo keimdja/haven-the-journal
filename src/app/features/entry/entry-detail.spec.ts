@@ -70,7 +70,7 @@ describe('EntryDetail', () => {
 
   it('numbers a reflection’s answered parts under their questions, skipping the rest', () => {
     const { host } = open('ref-1', [reflection]);
-    const headings = Array.from(host.querySelectorAll('h2')).map((h) =>
+    const headings = Array.from(host.querySelectorAll('app-reflection-body h2')).map((h) =>
       h.textContent?.replace(/\s+/g, ' ').trim(),
     );
     expect(headings).toEqual([

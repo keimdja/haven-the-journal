@@ -1,0 +1,32 @@
+<footer class="flex justify-center border-t border-hairline pt-3.5">
+  <button
+    class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-error hover:text-error-deep"
+    type="button"
+    (click)="confirming.set(true)"
+  >
+    <app-icon name="trash" [size]="16" />
+    {{ t().entry.delete.action }}
+  </button>
+</footer>
+
+<app-bottom-sheet [heading]="t().entry.delete.heading" [alert]="true" [(open)]="confirming">
+  <p class="text-ink-muted">
+    @if (entry().title; as title) {
+      “{{ title }}” {{ t().entry.delete.body }}
+    } @else {
+      {{ t().entry.delete.bodyUntitled }}
+    }
+  </p>
+  <p class="text-sm text-ink-soft">
+    {{ t().entry.delete.wantCopy }}
+    <a class="font-medium" routerLink="/settings">{{ t().entry.delete.export }}</a>
+  </p>
+  <div class="mt-2.5 grid grid-cols-2 gap-2.5">
+    <button appButton="secondary" autofocus [wide]="true" (click)="confirming.set(false)">
+      {{ t().entry.delete.keep }}
+    </button>
+    <button appButton="danger" [wide]="true" (click)="confirm()">
+      {{ t().entry.delete.confirm }}
+    </button>
+  </div>
+</app-bottom-sheet>
