@@ -6,6 +6,7 @@ import { Button } from '../../shared/ui/button/button';
 import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
 import { DateStamp } from '../../shared/ui/date-stamp/date-stamp';
+import { EntryRow } from '../../shared/ui/entry-row/entry-row';
 import { Icon } from '../../shared/ui/icon/icon';
 import { SaveStatus } from '../../shared/ui/save-status/save-status';
 import { SectionLabel } from '../../shared/ui/section-label/section-label';
@@ -31,6 +32,7 @@ import { StyleguideSection } from './styleguide-section';
     CheckRow,
     Chip,
     DateStamp,
+    EntryRow,
     Icon,
     SaveStatus,
     SectionLabel,
@@ -270,6 +272,46 @@ import { StyleguideSection } from './styleguide-section';
               [danger]="true"
             ></button>
           </div>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Entry rows"
+        note="Home shows title and preview; Journal adds the kind tag and draft progress. Untitled entries lead with their opening words."
+      >
+        <div class="flex w-full max-w-md flex-col">
+          <a
+            app-entry-row
+            href="#"
+            [date]="sampleDate"
+            title="The meeting with Ana"
+            preview="I kept replaying what I said, wondering if it came across as defensive. By the evening it felt smaller."
+          ></a>
+          <a
+            app-entry-row
+            href="#"
+            [date]="sampleDate"
+            title="After the call with Dad"
+            preview="He asked again when I’m moving back. I said “we’ll see” and then felt strange for the rest of the day."
+            kind="reflection"
+            [showKind]="true"
+            [draftPart]="3"
+          ></a>
+          <a
+            app-entry-row
+            href="#"
+            [date]="sampleDate"
+            preview="Couldn’t sleep. Writing this down so it stops circling."
+            [showKind]="true"
+          ></a>
+          <a
+            app-entry-row
+            href="#"
+            [date]="sampleDate"
+            title="Sunday at Abuela’s"
+            preview="She showed me how to fold pasteles the way her mother did."
+            [hidePreview]="true"
+          ></a>
         </div>
       </app-styleguide-section>
 
