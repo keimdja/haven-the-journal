@@ -1,0 +1,11 @@
+@if (pwa.updateReady()) {
+  <p
+    class="fixed inset-x-4 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-20 mx-auto flex w-fit items-center gap-2 rounded-full border border-hairline bg-paper px-4 py-1 text-meta text-ink-soft shadow-lifted lg:bottom-6"
+    role="status"
+  >
+    {{ t().pwa.updateReady }}
+    <button class="min-h-9 font-semibold text-olive" type="button" (click)="pwa.reload()">
+      {{ t().pwa.reload }}
+    </button>
+  </p>
+}
