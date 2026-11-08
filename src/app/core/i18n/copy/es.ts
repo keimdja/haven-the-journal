@@ -23,6 +23,16 @@ export const es: Copy = {
     privacy: 'Tus entradas son privadas y solo se ven desde tu cuenta.',
   },
   home: {
+    sub: '¿Qué tienes en mente hoy? Puedes empezar por donde quieras.',
+    startLabel: 'Empezar a escribir',
+    write: {
+      title: 'Escribir libremente',
+      sub: 'Sin preguntas ni estructura. Solo la página.',
+    },
+    reflect: {
+      title: 'Empezar una reflexión',
+      sub: 'Seis preguntas para mirar un momento con más calma.',
+    },
     greeting: {
       morning: 'Buenos días',
       afternoon: 'Buenas tardes',

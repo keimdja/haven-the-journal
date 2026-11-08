@@ -1,4 +1,12 @@
-<div class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Home</h1>
-  <p class="text-ink-soft">Greeting, start options, resume card and recent entries.</p>
+<div
+  class="flex flex-col gap-7.5 px-6 pt-15 lg:gap-10 lg:px-[clamp(1.5rem,6vw,5.5rem)] lg:pt-16 lg:pb-18"
+>
+  <header class="flex flex-col gap-2.5 lg:gap-3">
+    <app-brand-mark class="mb-3 lg:hidden" />
+    <p class="text-label font-medium text-ink-soft uppercase">{{ date() }}</p>
+    <h1 class="font-reflect text-greeting lg:text-display">{{ hello() }}</h1>
+    <p class="text-base text-ink-soft lg:text-[17px]">{{ t().home.sub }}</p>
+  </header>
+
+  <app-start-options />
 </div>

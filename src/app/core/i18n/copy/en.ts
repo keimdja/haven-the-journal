@@ -29,6 +29,16 @@ export const en = {
     privacy: 'Your entries are private to your account.',
   },
   home: {
+    sub: 'What’s on your mind today? You can start anywhere.',
+    startLabel: 'Start writing',
+    write: {
+      title: 'Write freely',
+      sub: 'No prompts, no structure. Just the page.',
+    },
+    reflect: {
+      title: 'Start a reflection',
+      sub: 'Six gentle questions to look at a moment more closely.',
+    },
     greeting: {
       morning: 'Good morning',
       afternoon: 'Good afternoon',

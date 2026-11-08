@@ -7,6 +7,7 @@ import type { Session } from '@supabase/auth-js';
 import { routes } from './app.routes';
 import { Auth } from './core/auth/auth';
 import { EntriesRepo } from './core/data/entries-repo';
+import { ProfileStore } from './core/data/profile-store';
 
 describe('routes', () => {
   async function visit(url: string, session: Session | null = {} as Session) {
@@ -15,6 +16,7 @@ describe('routes', () => {
       providers: [
         provideRouter(routes, withComponentInputBinding()),
         { provide: Auth, useValue: auth },
+        { provide: ProfileStore, useValue: { profile: signal(null) } },
         // Screens stay on their route: the entry is still "loading" for these tests.
         {
           provide: EntriesRepo,
