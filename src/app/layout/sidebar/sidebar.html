@@ -3,7 +3,7 @@
     <app-brand-mark size="md" [tagline]="true" />
   </a>
 
-  <nav class="flex flex-col gap-0.5" aria-label="Main">
+  <nav class="flex flex-col gap-0.5" [attr.aria-label]="t().nav.label">
     @for (item of items; track item.path) {
       <a
         class="flex h-11 items-center gap-3 rounded-lg px-3 font-medium text-ink-muted no-underline transition-colors not-aria-[current=page]:hover:bg-cream-deep aria-[current=page]:bg-sage-tint aria-[current=page]:font-semibold aria-[current=page]:text-olive-ink"
@@ -13,10 +13,10 @@
         [routerLinkActiveOptions]="{ exact: item.exact }"
       >
         <app-icon [name]="item.icon" [size]="19" />
-        {{ item.label }}
+        {{ t().nav[item.label] }}
       </a>
     }
   </nav>
 
-  <p class="mx-3 mt-auto text-meta text-ink-soft">Your entries are private to your account.</p>
+  <p class="mx-3 mt-auto text-meta text-ink-soft">{{ t().sidebar.privacy }}</p>
 </aside>

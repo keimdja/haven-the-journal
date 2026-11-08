@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
+import { I18n } from '../../core/i18n/i18n';
 import { Sidebar } from './sidebar';
 
 @Component({ template: '' })
 class Blank {}
 
 describe('Sidebar', () => {
+  afterEach(() => localStorage.clear());
+
   async function at(url: string) {
     TestBed.configureTestingModule({
       providers: [
@@ -40,5 +43,15 @@ describe('Sidebar', () => {
       (link) => link.getAttribute('aria-current') === 'page',
     );
     expect(current.map((link) => link.textContent?.trim())).toEqual(['Settings']);
+  });
+
+  it('shows the privacy note in Spanish', async () => {
+    await at('/');
+    TestBed.inject(I18n).setLang('es');
+    const fixture = TestBed.createComponent(Sidebar);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'Tus entradas son privadas y solo se ven desde tu cuenta.',
+    );
   });
 });

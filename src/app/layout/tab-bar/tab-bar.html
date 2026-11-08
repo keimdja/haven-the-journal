@@ -1,6 +1,6 @@
 <nav
   class="grid grid-cols-3 gap-1 border-t border-hairline bg-ivory px-3 pt-2 pb-[calc(1.125rem+env(safe-area-inset-bottom))]"
-  aria-label="Main"
+  [attr.aria-label]="t().nav.label"
 >
   @for (item of items; track item.path) {
     <a
@@ -15,7 +15,7 @@
       >
         <app-icon [name]="item.icon" />
       </span>
-      {{ item.label }}
+      {{ t().nav[item.label] }}
     </a>
   }
 </nav>

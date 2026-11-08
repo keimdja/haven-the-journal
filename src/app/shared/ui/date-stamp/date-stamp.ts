@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { formatStamp } from '../../../core/i18n/format-date';
+
 /**
  * The "20 / TUE" column at the start of an entry row: the day of the month in
- * Fraunces over a short weekday. Uses the browser's Intl, so Spanish needs no
- * extra locale data ("20 / MAR").
+ * Fraunces over a short weekday ("20 / TUE", "20 / MAR").
  */
 @Component({
   selector: 'app-date-stamp',
   template: `
     <time class="flex w-8.5 flex-col items-center pt-0.5" [attr.datetime]="isoDate()">
-      <span class="font-reflect text-[24px] leading-none">{{ day() }}</span>
-      <span class="mt-1 text-stamp text-ink-soft uppercase">{{ weekday() }}</span>
+      <span class="font-reflect text-[24px] leading-none">{{ stamp().day }}</span>
+      <span class="mt-1 text-stamp text-ink-soft uppercase">{{ stamp().weekday }}</span>
     </time>
   `,
   host: { class: 'block shrink-0' },
@@ -23,12 +24,7 @@ export class DateStamp {
 
   private readonly value = computed(() => new Date(this.date()));
 
-  protected readonly day = computed(() => this.value().getDate());
-  protected readonly weekday = computed(() =>
-    new Intl.DateTimeFormat(this.locale(), { weekday: 'short' })
-      .format(this.value())
-      .replace('.', ''),
-  );
+  protected readonly stamp = computed(() => formatStamp(this.value(), this.locale()));
   /** Local calendar date, e.g. 2026-10-20, for the <time> element. */
   protected readonly isoDate = computed(() => {
     const d = this.value();
