@@ -29,6 +29,9 @@ export const en = {
     privacy: 'Your entries are private to your account.',
   },
   home: {
+    resume: 'Pick up where you left off',
+    recent: 'Recently',
+    seeAll: 'See all',
     sub: 'What’s on your mind today? You can start anywhere.',
     startLabel: 'Start writing',
     write: {

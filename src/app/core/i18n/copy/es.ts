@@ -23,6 +23,9 @@ export const es: Copy = {
     privacy: 'Tus entradas son privadas y solo se ven desde tu cuenta.',
   },
   home: {
+    resume: 'Retoma donde lo dejaste',
+    recent: 'Recientes',
+    seeAll: 'Ver todo',
     sub: '¿Qué tienes en mente hoy? Puedes empezar por donde quieras.',
     startLabel: 'Empezar a escribir',
     write: {

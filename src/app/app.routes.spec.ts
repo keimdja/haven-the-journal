@@ -20,7 +20,13 @@ describe('routes', () => {
         // Screens stay on their route: the entry is still "loading" for these tests.
         {
           provide: EntriesRepo,
-          useValue: { byId: () => new Promise(() => {}), all: signal([]), loaded: signal(false) },
+          useValue: {
+            byId: () => new Promise(() => {}),
+            all: signal([]),
+            loaded: signal(false),
+            recent: signal([]),
+            newestDraft: signal(undefined),
+          },
         },
       ],
     });

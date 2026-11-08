@@ -1,4 +1,4 @@
-import { formatLongDate, formatMonth, formatStamp, formatTime } from './format-date';
+import { formatLongDate, formatMonth, formatStamp, formatTime, formatWeekday } from './format-date';
 
 // Built from local parts, so the results don't depend on the test machine's timezone.
 const evening = new Date(2026, 9, 21, 21, 12);
@@ -24,6 +24,10 @@ describe('format-date', () => {
       expect(formatMonth(evening, locale)).toBe('October 2026');
     });
 
+    it('names the full weekday', () => {
+      expect(formatWeekday(evening, locale)).toBe('Wednesday');
+    });
+
     it('formats the time in lowercase, 12-hour', () => {
       expect(plain(formatTime(evening, locale))).toBe('9:12 pm');
       expect(plain(formatTime(morning, locale))).toBe('9:05 am');
@@ -40,6 +44,10 @@ describe('format-date', () => {
 
     it('uses the Spanish short weekday without a trailing period', () => {
       expect(formatStamp(evening, locale)).toEqual({ day: '21', weekday: 'mié' });
+    });
+
+    it('keeps the weekday lowercase, for mid-sentence use', () => {
+      expect(formatWeekday(evening, locale)).toBe('miércoles');
     });
 
     it('capitalizes the month heading', () => {
