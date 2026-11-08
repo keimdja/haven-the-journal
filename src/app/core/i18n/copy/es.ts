@@ -11,6 +11,13 @@ export const es: Copy = {
   sidebar: {
     privacy: 'Tus entradas son privadas y solo se ven desde tu cuenta.',
   },
+  home: {
+    greeting: {
+      morning: 'Buenos días',
+      afternoon: 'Buenas tardes',
+      evening: 'Buenas noches',
+    },
+  },
   settings: {
     title: 'Ajustes',
     language: {

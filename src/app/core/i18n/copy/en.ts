@@ -13,6 +13,13 @@ export const en = {
   sidebar: {
     privacy: 'Your entries are private to your account.',
   },
+  home: {
+    greeting: {
+      morning: 'Good morning',
+      afternoon: 'Good afternoon',
+      evening: 'Good evening',
+    },
+  },
   settings: {
     title: 'Settings',
     language: {
