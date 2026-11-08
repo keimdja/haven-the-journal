@@ -5,6 +5,7 @@ import { from } from 'rxjs';
 
 import { LocalDb, LocalEntry } from './local-db';
 import type { Entry, EntryKind } from './models';
+import { Sync } from './sync';
 
 /** A blank entry of the given kind, dated now. Reflections start as a draft at part 1. */
 export function blankEntry(kind: EntryKind, now = new Date()): Entry {
@@ -38,8 +39,8 @@ function toEntry({ dirty: _dirty, ...entry }: LocalEntry): Entry {
 
 /**
  * The only way screens read and change entries. Everything happens on this
- * device first (so it works offline); each change is marked dirty for sync to
- * push. Deleted entries are kept as empty tombstones and never listed.
+ * device first (so it works offline); each change is marked dirty and sync is
+ * asked to push it soon. Deleted entries are kept as empty tombstones and never listed.
  *
  * The lists are signals that update by themselves whenever an entry is saved
  * anywhere, so Home and Journal stay current without reloading.
@@ -47,6 +48,7 @@ function toEntry({ dirty: _dirty, ...entry }: LocalEntry): Entry {
 @Injectable({ providedIn: 'root' })
 export class EntriesRepo {
   private readonly db = inject(LocalDb);
+  private readonly sync = inject(Sync);
 
   /** Every entry, newest first by the date it was written. */
   readonly all = toSignal(
@@ -81,6 +83,7 @@ export class EntriesRepo {
   async create(kind: EntryKind): Promise<Entry> {
     const entry = blankEntry(kind);
     await this.db.entries.add({ ...entry, dirty: 1 });
+    this.sync.requestSoon();
     return entry;
   }
 
@@ -94,6 +97,7 @@ export class EntriesRepo {
   async save(entry: Entry): Promise<Entry> {
     const saved = { ...entry, clientUpdatedAt: new Date().toISOString() };
     await this.db.entries.put({ ...saved, dirty: 1 });
+    this.sync.requestSoon();
     return saved;
   }
 
@@ -122,5 +126,6 @@ export class EntriesRepo {
       clientUpdatedAt: now,
       dirty: 1,
     });
+    this.sync.requestSoon();
   }
 }

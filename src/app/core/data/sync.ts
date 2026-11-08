@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Injectable, inject, signal } from '@angular/core';
 
 import { Auth } from '../auth/auth';
@@ -20,6 +21,9 @@ const PULL_PAGE = 1000;
  */
 const PULL_OVERLAP_MS = 60_000;
 
+/** After a save, wait this long for more typing before syncing, so one burst is one upload. */
+export const SYNC_DELAY_MS = 2000;
+
 /** A request that failed: status 0 means it never reached the server. */
 interface FailedRequest {
   status: number;
@@ -31,9 +35,12 @@ export class OfflineError extends Error {}
 
 /**
  * Copies changes between this device and Supabase: `push()` uploads what
- * changed here, `pull()` downloads what changed elsewhere.
+ * changed here, `pull()` downloads what changed elsewhere, and `run()` does
+ * both, in that order. `requestSoon()` runs it shortly after a save.
  *
  * `state` drives the save-status line: saving, saved, offline, or error.
+ * Your words are always safe on this device first; "offline" only means they
+ * haven't reached your other devices yet.
  */
 @Injectable({ providedIn: 'root' })
 export class Sync {
@@ -41,8 +48,62 @@ export class Sync {
   private readonly supabase = inject(SUPABASE);
   private readonly auth = inject(Auth);
 
+  private readonly window = inject(DOCUMENT).defaultView;
+
   private readonly current = signal<SaveState>('saved');
   readonly state = this.current.asReadonly();
+
+  private running: Promise<void> | null = null;
+  private runAgain = false;
+  private timer: ReturnType<typeof setTimeout> | undefined;
+
+  /**
+   * Push, then pull. Only one run at a time: asking during a run queues one more
+   * run after it, so changes made meanwhile aren't missed. Never throws; the
+   * outcome shows in `state`.
+   */
+  run(): Promise<void> {
+    if (this.running) {
+      this.runAgain = true;
+      return this.running;
+    }
+    this.running = this.runOnce().finally(() => {
+      this.running = null;
+      if (this.runAgain) {
+        this.runAgain = false;
+        void this.run();
+      }
+    });
+    return this.running;
+  }
+
+  /** Called after every save: shows "Saving…" and syncs once typing pauses. */
+  requestSoon(): void {
+    clearTimeout(this.timer);
+    this.current.set(this.isOnline() ? 'saving' : 'offline');
+    this.timer = setTimeout(() => void this.run(), SYNC_DELAY_MS);
+  }
+
+  private async runOnce(): Promise<void> {
+    if (!this.auth.session()) return;
+    if (!this.isOnline()) {
+      this.current.set('offline');
+      return;
+    }
+    try {
+      await this.push();
+      await this.pull();
+      this.current.set('saved');
+    } catch (error) {
+      const offline = error instanceof OfflineError;
+      this.current.set(offline ? 'offline' : 'error');
+      if (!offline) console.error('Sync failed', error);
+    }
+  }
+
+  private isOnline(): boolean {
+    return this.window?.navigator.onLine ?? true;
+  }
 
   /**
    * Uploads every dirty entry. An entry is marked clean only if it wasn't

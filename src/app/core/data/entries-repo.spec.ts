@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EntriesRepo, blankEntry } from './entries-repo';
 import { LocalDb } from './local-db';
+import { Sync } from './sync';
 
 /** The lists update from IndexedDB a moment after a write; wait for them. */
 async function until(condition: () => boolean): Promise<void> {
@@ -14,8 +15,11 @@ async function until(condition: () => boolean): Promise<void> {
 describe('EntriesRepo', () => {
   let repo: EntriesRepo;
   let db: LocalDb;
+  let sync: { requestSoon: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
+    sync = { requestSoon: vi.fn() };
+    TestBed.configureTestingModule({ providers: [{ provide: Sync, useValue: sync }] });
     repo = TestBed.inject(EntriesRepo);
     db = TestBed.inject(LocalDb);
   });
@@ -38,6 +42,13 @@ describe('EntriesRepo', () => {
 
     expect(await repo.byId(created.id)).toEqual(created);
     expect((await db.entries.get(created.id))?.dirty).toBe(1);
+  });
+
+  it('asks sync to push after every change', async () => {
+    const created = await repo.create('free');
+    await repo.save({ ...created, body: 'Hi' });
+    await repo.remove(created.id);
+    expect(sync.requestSoon).toHaveBeenCalledTimes(3);
   });
 
   it('saves a new version with a new edit time', async () => {
