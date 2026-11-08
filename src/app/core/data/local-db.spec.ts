@@ -1,5 +1,3 @@
-import 'fake-indexeddb/auto';
-
 import { TestBed } from '@angular/core/testing';
 
 import { LocalDb, LocalEntry } from './local-db';
