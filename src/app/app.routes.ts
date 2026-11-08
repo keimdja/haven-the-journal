@@ -16,11 +16,14 @@ const devRoutes: Routes = ngDevMode
     ]
   : [];
 
-/** Every screen loads on demand, so the first visit only downloads what it shows. */
+/**
+ * Every screen loads on demand, so the first visit only downloads what it shows.
+ * Each `title` names a line in the copy's `titles`; TranslatedTitles shows it in the tab.
+ */
 export const routes: Routes = [
   {
     path: 'login',
-    title: 'Sign in · Haven',
+    title: 'login',
     loadComponent: () => import('./features/login/login').then((m) => m.Login),
   },
   ...devRoutes,
@@ -38,17 +41,17 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            title: 'Haven',
+            title: 'home',
             loadComponent: () => import('./features/home/home').then((m) => m.Home),
           },
           {
             path: 'journal',
-            title: 'Journal · Haven',
+            title: 'journal',
             loadComponent: () => import('./features/journal/journal').then((m) => m.Journal),
           },
           {
             path: 'settings',
-            title: 'Settings · Haven',
+            title: 'settings',
             loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
           },
         ],
@@ -57,23 +60,23 @@ export const routes: Routes = [
       // Full-screen pages, without the navigation, as in the design.
       {
         path: 'entry/:id',
-        title: 'Entry · Haven',
+        title: 'entry',
         loadComponent: () => import('./features/entry/entry-detail').then((m) => m.EntryDetail),
       },
       {
         path: 'write/:id',
-        title: 'Write · Haven',
+        title: 'write',
         loadComponent: () => import('./features/write/editor').then((m) => m.Editor),
       },
       // Before `reflect/:id/:part`, so "review" isn't read as a part number.
       {
         path: 'reflect/:id/review',
-        title: 'Your reflection · Haven',
+        title: 'review',
         loadComponent: () => import('./features/reflect/review/review').then((m) => m.Review),
       },
       {
         path: 'reflect/:id/:part',
-        title: 'Reflection · Haven',
+        title: 'reflection',
         loadComponent: () =>
           import('./features/reflect/reflect-part/reflect-part').then((m) => m.ReflectPart),
       },

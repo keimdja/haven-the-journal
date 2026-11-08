@@ -19,6 +19,16 @@ export const en = {
     wrongDetails: 'That email and password don’t match.',
     failed: 'Couldn’t reach Haven. Check your connection and try again.',
   },
+  titles: {
+    home: 'Haven',
+    journal: 'Journal · Haven',
+    entry: 'Entry · Haven',
+    write: 'Write · Haven',
+    reflection: 'Reflection · Haven',
+    review: 'Your reflection · Haven',
+    settings: 'Settings · Haven',
+    login: 'Sign in · Haven',
+  },
   nav: {
     label: 'Main',
     home: 'Home',

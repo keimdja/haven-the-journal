@@ -13,6 +13,16 @@ export const es: Copy = {
     wrongDetails: 'El correo y la contraseña no coinciden.',
     failed: 'No pudimos conectar con Haven. Revisa tu conexión e inténtalo otra vez.',
   },
+  titles: {
+    home: 'Haven',
+    journal: 'Diario · Haven',
+    entry: 'Entrada · Haven',
+    write: 'Escribir · Haven',
+    reflection: 'Reflexión · Haven',
+    review: 'Tu reflexión · Haven',
+    settings: 'Ajustes · Haven',
+    login: 'Inicia sesión · Haven',
+  },
   nav: {
     label: 'Principal',
     home: 'Inicio',
