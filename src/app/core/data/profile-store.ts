@@ -1,9 +1,9 @@
-import { Injectable, effect, inject } from '@angular/core';
+import { Injectable, effect, inject, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { liveQuery } from 'dexie';
 import { from } from 'rxjs';
 
-import { I18n } from '../i18n/i18n';
+import { I18n, Lang } from '../i18n/i18n';
 import { LocalDb } from './local-db';
 import type { Profile } from './models';
 import { Sync } from './sync';
@@ -30,8 +30,15 @@ export class ProfileStore {
   constructor() {
     effect(() => {
       const language = this.profile()?.language;
-      if (language && language !== this.i18n.lang()) this.i18n.setLang(language);
+      // Untracked: this follows the profile arriving, and mustn't undo a choice just made here.
+      if (language && language !== untracked(this.i18n.lang)) this.i18n.setLang(language);
     });
+  }
+
+  /** Switches the app straight away and remembers the choice for your other devices. */
+  setLanguage(language: Lang): Promise<void> {
+    this.i18n.setLang(language);
+    return this.update({ language });
   }
 
   /** Saves a change here, marks it for upload, and asks sync to push it soon. */

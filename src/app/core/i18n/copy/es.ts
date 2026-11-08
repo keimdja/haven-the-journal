@@ -243,6 +243,7 @@ export const es: Copy = {
     account: {
       heading: 'Cuenta',
       name: 'Nombre',
+      namePlaceholder: 'Agrega tu nombre',
       email: 'Correo',
     },
     privacy: {

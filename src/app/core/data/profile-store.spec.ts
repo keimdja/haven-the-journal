@@ -55,4 +55,22 @@ describe('ProfileStore', () => {
     TestBed.tick();
     expect(TestBed.inject(I18n).lang()).toBe('es');
   });
+
+  it('keeps a language just chosen here, and saves it for other devices', async () => {
+    await db.meta.put({
+      key: 'profile',
+      value: { displayName: 'K', language: 'en', hidePreviews: false },
+    });
+    const store = TestBed.inject(ProfileStore);
+    const i18n = TestBed.inject(I18n);
+    await vi.waitFor(() => expect(store.profile()?.language).toBe('en'));
+    TestBed.tick();
+
+    await store.setLanguage('es');
+    TestBed.tick();
+
+    expect(i18n.lang()).toBe('es');
+    expect((await db.meta.get('profile'))?.value).toMatchObject({ language: 'es' });
+    expect((await db.meta.get('profileDirty'))?.value).toBe(true);
+  });
 });

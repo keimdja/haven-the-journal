@@ -247,6 +247,7 @@ export const en = {
     account: {
       heading: 'Account',
       name: 'Name',
+      namePlaceholder: 'Add your name',
       email: 'Email',
     },
     privacy: {

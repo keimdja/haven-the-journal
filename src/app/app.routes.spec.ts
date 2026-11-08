@@ -11,7 +11,7 @@ import { ProfileStore } from './core/data/profile-store';
 
 describe('routes', () => {
   async function visit(url: string, session: Session | null = {} as Session) {
-    const auth = { ready: signal(true), session: signal(session) };
+    const auth = { ready: signal(true), session: signal(session), user: signal(null) };
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes, withComponentInputBinding()),
