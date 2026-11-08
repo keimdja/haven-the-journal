@@ -12,9 +12,10 @@ import {
 import { Router } from '@angular/router';
 
 import { EntriesRepo } from '../../../core/data/entries-repo';
-import type { Entry } from '../../../core/data/models';
+import type { Entry, FeelingKey } from '../../../core/data/models';
 import { partForStep, ReflectionPartKey } from '../../../core/data/reflection-parts';
 import { I18n } from '../../../core/i18n/i18n';
+import { FeelingsPart } from '../feelings-part/feelings-part';
 import { ReflectShell } from '../reflect-shell/reflect-shell';
 import { TextPart } from '../text-part/text-part';
 
@@ -33,7 +34,7 @@ type TextField = Extract<ReflectionPartKey, 'whatHappened' | 'thoughts' | 'refra
  */
 @Component({
   selector: 'app-reflect-part',
-  imports: [ReflectShell, TextPart],
+  imports: [FeelingsPart, ReflectShell, TextPart],
   templateUrl: './reflect-part.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -71,6 +72,18 @@ export class ReflectPart {
 
   protected setText(field: TextField, value: string): void {
     this.change({ [field]: value.trim() ? value : null });
+  }
+
+  protected setFeelings(feelings: FeelingKey[]): void {
+    this.change({ feelings });
+  }
+
+  protected setCustomFeelings(customFeelings: string[]): void {
+    this.change({ customFeelings });
+  }
+
+  protected setNote(value: string): void {
+    this.change({ feelingsNote: value.trim() ? value : null });
   }
 
   private change(changes: Partial<Entry>): void {

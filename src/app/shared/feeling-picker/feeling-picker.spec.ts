@@ -85,6 +85,7 @@ describe('FeelingPicker', () => {
     const { root, buttons } = setup((h) => h.alwaysOpen.set(true));
     expect(root.querySelectorAll('button[aria-pressed]')).toHaveLength(14);
     expect(buttons().some((button) => button.textContent?.trim() === 'Done')).toBe(false);
+    expect(root.textContent).not.toContain('How does this feel?');
   });
 
   it('adds your own on Enter, trimmed and clears the field', () => {

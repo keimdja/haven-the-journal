@@ -26,7 +26,8 @@ import { TextField, TextFieldInput } from '../ui/text-field/text-field';
  * and `[(customFeelings)]`; it holds no data of its own.
  *
  * Closed, it shows what's chosen and a button to change it. Open, it offers the
- * 14 presets and an "Add your own" field. `alwaysOpen` skips the closed view.
+ * 14 presets and an "Add your own" field. `alwaysOpen` skips the closed view and
+ * the picker's own heading, for a page that already asks the question.
  * Feelings you type are kept exactly as written and never translated.
  */
 @Component({

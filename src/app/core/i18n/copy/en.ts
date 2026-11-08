@@ -79,6 +79,7 @@ export const en = {
   reflect: {
     saveExit: 'Save & exit',
     nudge: 'Need a nudge?',
+    feelingsNote: 'Anything else about how it felt?',
     placeholder: 'Take your time…',
     savedAsYouWrite: 'Saved as you write',
     part: 'Part',

@@ -183,4 +183,44 @@ describe('ReflectPart', () => {
       expect(host.querySelector('app-nudges')!.textContent).toContain('It can be small.');
     });
   });
+
+  describe('feelings part', () => {
+    it('shows the question and the picker already open, without a second heading', async () => {
+      const { host } = await open('r1', '3');
+      expect(host.querySelector('h1')!.textContent).toContain('What did I feel?');
+      expect(host.querySelectorAll('button[aria-pressed]')).toHaveLength(14);
+      expect(host.textContent).not.toContain('How does this feel?');
+    });
+
+    it('marks the feelings already chosen, and shows the note', async () => {
+      const { host } = await open('r1', '3', {
+        ...draft,
+        feelings: ['sad'],
+        customFeelings: ['Small'],
+        feelingsNote: 'A knot in my stomach.',
+      });
+      const pressed = host.querySelector('button[aria-pressed="true"]')!;
+      expect(pressed.textContent).toContain('Sad');
+      expect(host.textContent).toContain('Small');
+      expect(host.querySelector('textarea')!.value).toBe('A knot in my stomach.');
+    });
+
+    it('saves chosen feelings and the note', async () => {
+      const { repo, fixture, host } = await open('r1', '3');
+      vi.useFakeTimers();
+
+      const calm = Array.from(host.querySelectorAll<HTMLButtonElement>('button[aria-pressed]'))[0];
+      calm.click();
+      fixture.detectChanges();
+      const note = host.querySelector('textarea')!;
+      note.value = 'Better by evening.';
+      note.dispatchEvent(new Event('input'));
+      await vi.advanceTimersByTimeAsync(AUTOSAVE_MS);
+
+      expect(repo.save.mock.calls[0][0]).toMatchObject({
+        feelings: ['calm'],
+        feelingsNote: 'Better by evening.',
+      });
+    });
+  });
 });

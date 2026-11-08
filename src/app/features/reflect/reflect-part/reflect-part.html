@@ -9,6 +9,17 @@
           [value]="entry[part.key] ?? ''"
           (valueChange)="setText(part.key, $event)"
         />
+      } @else if (part.kind === 'feelings') {
+        <app-feelings-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [feelings]="entry.feelings"
+          [customFeelings]="entry.customFeelings"
+          [note]="entry.feelingsNote ?? ''"
+          (feelingsChange)="setFeelings($event)"
+          (customFeelingsChange)="setCustomFeelings($event)"
+          (noteChange)="setNote($event)"
+        />
       } @else {
         <h1 class="font-reflect text-question">{{ t().reflect.parts[part.key].question }}</h1>
       }

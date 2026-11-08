@@ -73,6 +73,7 @@ export const es: Copy = {
   reflect: {
     saveExit: 'Guardar y salir',
     nudge: '¿Necesitas una pista?',
+    feelingsNote: '¿Algo más sobre cómo se sintió?',
     placeholder: 'Tómate tu tiempo…',
     savedAsYouWrite: 'Se guarda mientras escribes',
     part: 'Parte',
