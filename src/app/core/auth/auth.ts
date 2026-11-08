@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
-import type { Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/auth-js';
 
 import { SUPABASE } from './supabase';
 

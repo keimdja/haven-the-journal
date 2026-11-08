@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import type { Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/auth-js';
 
 import { routes } from './app.routes';
 import { Auth } from './core/auth/auth';

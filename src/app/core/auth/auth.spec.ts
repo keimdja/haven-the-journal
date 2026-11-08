@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/auth-js';
 
 import { Auth } from './auth';
 import { SUPABASE } from './supabase';
