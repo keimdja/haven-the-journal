@@ -3,8 +3,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { Auth } from '../../core/auth/auth';
 import { SignOutFlow } from '../../core/auth/sign-out';
+import { EntriesRepo } from '../../core/data/entries-repo';
 import type { Profile } from '../../core/data/models';
 import { ProfileStore } from '../../core/data/profile-store';
+import { Sync } from '../../core/data/sync';
 import { I18n } from '../../core/i18n/i18n';
 import { NAME_SAVE_MS, Settings } from './settings';
 
@@ -26,6 +28,8 @@ describe('Settings', () => {
         { provide: ProfileStore, useValue: store },
         { provide: Auth, useValue: { user: signal({ email: 'k@example.com' }) } },
         { provide: SignOutFlow, useValue: {} },
+        { provide: EntriesRepo, useValue: {} },
+        { provide: Sync, useValue: { state: signal('saved') } },
       ],
     });
     const fixture = TestBed.createComponent(Settings);
@@ -89,5 +93,26 @@ describe('Settings', () => {
     const { host, nameInput } = setup();
     const label = host.querySelector(`#${nameInput.getAttribute('aria-labelledby')}`);
     expect(label?.textContent).toContain('Name');
+  });
+
+  it('turns Hide previews on and off', () => {
+    const { store, fixture, host } = setup({
+      displayName: 'K',
+      language: 'en',
+      hidePreviews: true,
+    });
+    const toggle = host.querySelector<HTMLButtonElement>('button[role="switch"]')!;
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(store.update).toHaveBeenCalledWith({ hidePreviews: false });
+  });
+
+  it('has export, sign out and the care note', () => {
+    const { host } = setup();
+    expect(host.textContent).toContain('Export journal');
+    expect(host.textContent).toContain('Sign out');
+    expect(host.textContent).toContain('isn’t a substitute for professional care');
   });
 });

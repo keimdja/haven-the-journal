@@ -83,6 +83,12 @@ export class EntriesRepo {
       ),
   );
 
+  /** Every entry as it is right now, for when the live list might be a moment behind. */
+  async allNow(): Promise<Entry[]> {
+    const rows = await this.db.entries.orderBy('writtenAt').reverse().toArray();
+    return rows.filter((entry) => !entry.deletedAt).map(toEntry);
+  }
+
   /** Starts a new entry and stores it, so it survives a reload before the first word. */
   async create(kind: EntryKind): Promise<Entry> {
     const entry = blankEntry(kind);

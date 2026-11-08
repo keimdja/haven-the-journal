@@ -9,6 +9,8 @@ import {
   SegmentedControl,
 } from '../../shared/ui/segmented-control/segmented-control';
 import { SettingsRow } from '../../shared/ui/settings-row/settings-row';
+import { Switch } from '../../shared/ui/switch/switch';
+import { ExportRow } from './export-row/export-row';
 import { SignOutRow } from './sign-out-row/sign-out-row';
 
 /** How long typing a name has to pause before it's saved. */
@@ -23,7 +25,7 @@ const LANGUAGES: readonly SegmentOption<Lang>[] = [
 /** Language, account, privacy and your journal. */
 @Component({
   selector: 'app-settings',
-  imports: [SectionLabel, SegmentedControl, SettingsRow, SignOutRow],
+  imports: [ExportRow, SectionLabel, SegmentedControl, SettingsRow, SignOutRow, Switch],
   templateUrl: './settings.html',
   host: { class: 'mx-auto block w-full max-w-2xl' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +40,7 @@ export class Settings {
   protected readonly languages = LANGUAGES;
   protected readonly email = computed(() => this.auth.user()?.email ?? '');
   protected readonly name = computed(() => this.store.profile()?.displayName ?? '');
+  protected readonly hidePreviews = computed(() => this.store.profile()?.hidePreviews ?? false);
 
   private nameTimer: ReturnType<typeof setTimeout> | undefined;
   private pendingName: string | null = null;
@@ -48,6 +51,10 @@ export class Settings {
 
   protected setLanguage(language: Lang): void {
     void this.store.setLanguage(language);
+  }
+
+  protected setHidePreviews(hidePreviews: boolean): void {
+    void this.store.update({ hidePreviews });
   }
 
   protected editName(value: string): void {

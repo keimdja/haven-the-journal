@@ -36,5 +36,36 @@
     </div>
   </section>
 
-  <app-sign-out-row class="border-t border-hairline" />
+  <section class="flex flex-col border-t border-hairline" aria-labelledby="settings-privacy">
+    <h2 id="settings-privacy" class="px-6 pt-5.5 pb-2" appSectionLabel>
+      {{ t().settings.privacy.heading }}
+    </h2>
+    <app-settings-row
+      #hideRow
+      [label]="t().settings.privacy.hidePreviews"
+      [sub]="t().settings.privacy.hidePreviewsSub"
+    >
+      <app-switch
+        [labelledBy]="hideRow.labelId"
+        [checked]="hidePreviews()"
+        (checkedChange)="setHidePreviews($event)"
+      />
+    </app-settings-row>
+  </section>
+
+  <section class="flex flex-col border-t border-hairline" aria-labelledby="settings-journal">
+    <h2 id="settings-journal" class="px-6 pt-5.5 pb-2" appSectionLabel>
+      {{ t().settings.journal.heading }}
+    </h2>
+    <div class="flex flex-col divide-y divide-hairline-soft">
+      <app-export-row />
+      <app-sign-out-row />
+    </div>
+  </section>
+
+  <p
+    class="mx-6 mt-4.5 border-t border-hairline pt-4.5 pb-6 font-reflect text-prompt text-ink-muted italic"
+  >
+    {{ t().settings.care }}
+  </p>
 </div>
