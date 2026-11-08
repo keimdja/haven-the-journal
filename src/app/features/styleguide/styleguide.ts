@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
+import { BottomSheet } from '../../shared/ui/bottom-sheet/bottom-sheet';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
 import { CheckRow } from '../../shared/ui/check-row/check-row';
@@ -21,6 +22,7 @@ import { StyleguideSection } from './styleguide-section';
 @Component({
   selector: 'app-styleguide',
   imports: [
+    BottomSheet,
     BrandMark,
     Button,
     CheckRow,
@@ -201,6 +203,28 @@ import { StyleguideSection } from './styleguide-section';
       </app-styleguide-section>
 
       <app-styleguide-section
+        heading="Bottom sheet"
+        note="Native dialog: focus stays inside, Esc or the backdrop closes it, and it slides up unless motion is reduced."
+      >
+        <button appButton="secondary" (click)="sheetOpen.set(true)">Open the delete sheet</button>
+      </app-styleguide-section>
+
+      <app-bottom-sheet heading="Delete this entry?" [alert]="true" [(open)]="sheetOpen">
+        <p class="text-ink-muted">
+          “The meeting with Ana” will be removed from your journal. This can't be undone.
+        </p>
+        <p class="text-sm text-ink-soft">
+          Want a copy first? <a class="font-medium" href="#">Export your journal</a>
+        </p>
+        <div class="mt-2.5 grid grid-cols-2 gap-2.5">
+          <button appButton="secondary" autofocus [wide]="true" (click)="sheetOpen.set(false)">
+            Keep entry
+          </button>
+          <button appButton="danger" [wide]="true" (click)="sheetOpen.set(false)">Delete</button>
+        </div>
+      </app-bottom-sheet>
+
+      <app-styleguide-section
         heading="Icons"
         note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
       >
@@ -241,4 +265,5 @@ export class Styleguide {
   protected readonly language = signal<'en' | 'es'>('en');
   protected readonly hidePreviews = signal(false);
   protected readonly retries = signal(0);
+  protected readonly sheetOpen = signal(false);
 }
