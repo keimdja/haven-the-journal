@@ -71,6 +71,10 @@ export const es: Copy = {
     },
   },
   reflect: {
+    toc: {
+      label: 'Partes de la reflexión',
+      note: 'Muévete entre las partes en cualquier orden. Cada una se guarda por su cuenta.',
+    },
     review: {
       title: 'Tu reflexión',
       intro: 'Reléela si quieres. Nada aquí tiene que estar terminado.',

@@ -1,7 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
 import { EntriesRepo, blankEntry } from '../../../core/data/entries-repo';
+import { Sync } from '../../../core/data/sync';
 import type { Entry } from '../../../core/data/models';
 import { AUTOSAVE_MS, ReflectPart } from './reflect-part';
 
@@ -29,7 +31,11 @@ describe('ReflectPart', () => {
       remove: vi.fn().mockResolvedValue(undefined),
     };
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: EntriesRepo, useValue: repo }],
+      providers: [
+        provideRouter([]),
+        { provide: EntriesRepo, useValue: repo },
+        { provide: Sync, useValue: { state: signal('saved'), run: vi.fn() } },
+      ],
     });
     const router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
@@ -53,7 +59,7 @@ describe('ReflectPart', () => {
   it('shows the frame around a part', async () => {
     const { host } = await open('r1', '2');
     expect(host.querySelector('h1')!.textContent).toContain('What went through my mind?');
-    expect(host.querySelector('header p')!.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+    expect(host.querySelector('header p.text-meta')!.textContent?.replace(/\s+/g, ' ').trim()).toBe(
       'Part 2 of 6',
     );
     expect(host.querySelector('[role="progressbar"]')!.getAttribute('aria-valuenow')).toBe('2');
@@ -315,6 +321,26 @@ describe('ReflectPart', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(repo.remove).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('parts list', () => {
+    it('links to all six parts and marks where you are and what’s answered', async () => {
+      const { host } = await open('r1', '2', { ...draft, whatHappened: 'Words', currentStep: 2 });
+      const nav = host.querySelector('nav[aria-label="Reflection parts"]')!;
+      const links = Array.from(nav.querySelectorAll('a'));
+
+      expect(links.map((a) => a.getAttribute('href'))).toEqual(
+        [1, 2, 3, 4, 5, 6].map((step) => `/reflect/r1/${step}`),
+      );
+      expect(links[1].getAttribute('aria-current')).toBe('step');
+      expect(links[0].querySelector('span')!.className).toContain('bg-olive');
+      expect(links[3].querySelector('span')!.className).toContain('border-taupe');
+    });
+
+    it('shows the title in the desktop header', async () => {
+      const { host } = await open('r1', '1', { ...draft, title: 'The meeting' });
+      expect(host.querySelector('header')!.textContent).toContain('The meeting');
     });
   });
 });

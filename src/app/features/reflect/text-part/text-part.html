@@ -1,18 +1,18 @@
 <div class="flex flex-col gap-2.5">
-  <h1 class="font-reflect text-question">{{ question() }}</h1>
-  <p class="text-prompt text-ink-soft">{{ helper() }}</p>
+  <h1 class="font-reflect text-question lg:text-[40px] lg:leading-[1.12]">{{ question() }}</h1>
+  <p class="text-prompt text-ink-soft lg:text-base lg:leading-[1.6]">{{ helper() }}</p>
 </div>
 
 <app-nudges [prompts]="nudges()" (pick)="insert($event)" />
 
 <div
-  class="flex min-h-48 flex-1 rounded-xl border border-page-line bg-paper px-4.5 pt-4.5 pb-3 transition-[border-color,box-shadow] focus-within:border-sage focus-within:ring-3 focus-within:ring-sage-tint"
+  class="flex min-h-48 flex-1 rounded-xl border border-page-line bg-paper px-4.5 pt-4.5 pb-3 transition-[border-color,box-shadow] focus-within:border-sage focus-within:ring-3 focus-within:ring-sage-tint lg:min-h-75 lg:rounded-page lg:px-8 lg:py-7"
 >
   <label class="sr-only" for="reflect-page">{{ question() }}</label>
   <textarea
     #page
     id="reflect-page"
-    class="w-full flex-1 resize-none bg-transparent font-reflect text-writing focus-visible:outline-none"
+    class="w-full flex-1 resize-none bg-transparent font-reflect text-writing focus-visible:outline-none lg:text-[19px] lg:leading-[1.75]"
     [placeholder]="t().reflect.placeholder"
     [value]="value()"
     (input)="value.set(page.value)"

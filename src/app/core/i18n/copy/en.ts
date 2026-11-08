@@ -77,6 +77,10 @@ export const en = {
     },
   } satisfies Record<PatternKey, { label: string; example: string }>,
   reflect: {
+    toc: {
+      label: 'Reflection parts',
+      note: 'Move between parts in any order. Each one saves on its own.',
+    },
     review: {
       title: 'Your reflection',
       intro: 'Read it back if you like. Nothing here needs to be finished.',

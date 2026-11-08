@@ -12,8 +12,8 @@ import { I18n } from '../../../core/i18n/i18n';
 import { Icon } from '../../../shared/ui/icon/icon';
 
 /**
- * "Need a nudge?": prompts that open under a small button; tapping one adds it
- * to the page. A part with a single line (gratitude) just shows it, as a gentle
+ * "Need a nudge?": prompts that open under a small button (and are simply shown
+ * from 1024 px); tapping one adds it to the page. A part with a single line (gratitude) just shows it, as a gentle
  * hint rather than something to fill in.
  */
 @Component({

@@ -1,4 +1,5 @@
 import type { Entry } from './models';
+import type { ReflectionPart } from './reflection-parts';
 
 /**
  * The words to show under an entry's title in lists: the body of free writing,
@@ -32,4 +33,18 @@ export function isBlank(entry: Entry): boolean {
   ];
   const lists = [entry.feelings, entry.customFeelings, entry.patterns];
   return texts.every((text) => !text?.trim()) && lists.every((list) => list.length === 0);
+}
+
+/** Whether a reflection part has anything in it. */
+export function partHasAnswer(part: ReflectionPart, entry: Entry): boolean {
+  switch (part.kind) {
+    case 'feelings':
+      return (
+        entry.feelings.length + entry.customFeelings.length > 0 || !!entry.feelingsNote?.trim()
+      );
+    case 'patterns':
+      return entry.patterns.length > 0;
+    default:
+      return !!entry[part.key]?.trim();
+  }
 }

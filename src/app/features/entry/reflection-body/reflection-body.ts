@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
+import { partHasAnswer } from '../../../core/data/entry-summary';
 import type { Entry } from '../../../core/data/models';
 import { REFLECTION_PARTS, ReflectionPart } from '../../../core/data/reflection-parts';
 import { I18n } from '../../../core/i18n/i18n';
@@ -20,23 +21,10 @@ export class ReflectionBody {
 
   /** Parts you skipped aren't shown. */
   protected readonly parts = computed(() =>
-    REFLECTION_PARTS.filter((part) => hasAnswer(part, this.entry())),
+    REFLECTION_PARTS.filter((part) => partHasAnswer(part, this.entry())),
   );
 
   protected text(part: ReflectionPart): string | null {
     return part.kind === 'text' ? this.entry()[part.key] : null;
-  }
-}
-
-function hasAnswer(part: ReflectionPart, entry: Entry): boolean {
-  switch (part.kind) {
-    case 'feelings':
-      return (
-        entry.feelings.length + entry.customFeelings.length > 0 || !!entry.feelingsNote?.trim()
-      );
-    case 'patterns':
-      return entry.patterns.length > 0;
-    default:
-      return !!entry[part.key]?.trim();
   }
 }

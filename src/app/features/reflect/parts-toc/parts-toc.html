@@ -1,0 +1,33 @@
+<nav class="flex flex-col gap-1" [attr.aria-label]="t().reflect.toc.label">
+  <p class="mb-3 ml-3 text-label font-medium text-ink-soft uppercase">
+    {{ t().reflect.review.title }}
+  </p>
+  @for (row of rows(); track row.part.key) {
+    <a
+      class="flex min-h-11 items-center gap-3.5 rounded-lg px-3 py-2 no-underline transition-colors"
+      [class]="
+        row.current
+          ? 'bg-sage-tint font-semibold text-olive-ink'
+          : row.answered
+            ? 'text-ink hover:bg-cream'
+            : 'text-ink-soft hover:bg-cream'
+      "
+      [routerLink]="['/reflect', entry().id, row.part.step]"
+      [attr.aria-current]="row.current ? 'step' : null"
+    >
+      <span
+        class="size-2.25 shrink-0 rounded-full"
+        [class]="
+          row.current
+            ? 'border-2 border-olive bg-paper'
+            : row.answered
+              ? 'bg-olive'
+              : 'border-[1.5px] border-taupe'
+        "
+        aria-hidden="true"
+      ></span>
+      {{ t().reflect.parts[row.part.key].question }}
+    </a>
+  }
+  <p class="mx-3 mt-4.5 text-meta text-ink-soft">{{ t().reflect.toc.note }}</p>
+</nav>

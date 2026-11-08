@@ -1,6 +1,6 @@
 @if (entry(); as entry) {
   @if (current(); as part) {
-    <app-reflect-shell [entryId]="entry.id" [step]="part.step">
+    <app-reflect-shell [entry]="entry" [step]="part.step">
       @if (part.kind === 'text') {
         <app-text-part
           [question]="t().reflect.parts[part.key].question"
