@@ -12,6 +12,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { EntriesRepo } from '../../core/data/entries-repo';
+import { isBlank } from '../../core/data/entry-summary';
 import type { Entry, FeelingKey } from '../../core/data/models';
 import { Sync } from '../../core/data/sync';
 import { formatLongDate, formatTime } from '../../core/i18n/format-date';
@@ -129,7 +130,7 @@ export class Editor {
   private async leave(): Promise<void> {
     await this.save();
     const entry = this.entry();
-    if (entry && !entry.title && !entry.body && isUnfelt(entry)) await this.repo.remove(entry.id);
+    if (entry && isBlank(entry)) await this.repo.remove(entry.id);
   }
 
   private async open(id: string): Promise<void> {
@@ -149,10 +150,6 @@ export class Editor {
     this.feelings.set(entry.feelings);
     this.customFeelings.set(entry.customFeelings);
   }
-}
-
-function isUnfelt(entry: Entry): boolean {
-  return entry.feelings.length === 0 && entry.customFeelings.length === 0;
 }
 
 function sameItems(a: readonly string[], b: readonly string[]): boolean {

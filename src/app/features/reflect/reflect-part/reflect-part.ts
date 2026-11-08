@@ -12,6 +12,7 @@ import {
 import { Router } from '@angular/router';
 
 import { EntriesRepo } from '../../../core/data/entries-repo';
+import { isBlank } from '../../../core/data/entry-summary';
 import type { Entry, FeelingKey, PatternKey } from '../../../core/data/models';
 import { partForStep, ReflectionPartKey } from '../../../core/data/reflection-parts';
 import { I18n } from '../../../core/i18n/i18n';
@@ -31,7 +32,9 @@ type TextField = Extract<ReflectionPartKey, 'whatHappened' | 'thoughts' | 'refra
  * reflection and moves to its own address, as the editor does.
  *
  * Answers save by themselves as you write, when you move to another part, on
- * the way out, and when the app goes to the background.
+ * the way out, and when the app goes to the background. A draft remembers the
+ * part you're on, so Save & exit picks up there. One left completely blank is
+ * removed on the way out, so changing your mind doesn't leave an empty draft.
  */
 @Component({
   selector: 'app-reflect-part',
@@ -67,7 +70,7 @@ export class ReflectPart {
     document.addEventListener('visibilitychange', onHide);
     inject(DestroyRef).onDestroy(() => {
       document.removeEventListener('visibilitychange', onHide);
-      void this.save();
+      void this.leave();
     });
   }
 
@@ -109,6 +112,25 @@ export class ReflectPart {
     return this.saves;
   }
 
+  /** Going on to the review is still inside the reflection, so a blank one stays for now. */
+  private async leave(): Promise<void> {
+    const destination = this.router.currentNavigation()?.finalUrl?.toString() ?? '';
+    await this.save();
+    const entry = this.entry();
+    if (entry && isBlank(entry) && !destination.startsWith(`/reflect/${entry.id}`)) {
+      await this.repo.remove(entry.id);
+    }
+  }
+
+  /** Drafts follow you from part to part; finished reflections stay as they are. */
+  private track(part: string): void {
+    const step = partForStep(Number(part))?.step;
+    const entry = this.entry();
+    if (step && entry?.status === 'draft' && entry.currentStep !== step) {
+      this.change({ currentStep: step });
+    }
+  }
+
   private async open(id: string, part: string): Promise<void> {
     if (id === 'new') {
       const created = await this.repo.create('reflection');
@@ -116,7 +138,10 @@ export class ReflectPart {
       return;
     }
     await this.save();
-    if (this.entry()?.id === id && partForStep(Number(part))) return;
+    if (this.entry()?.id === id && partForStep(Number(part))) {
+      this.track(part);
+      return;
+    }
 
     const entry = await this.repo.byId(id);
     if (!entry || entry.kind !== 'reflection') {
@@ -128,5 +153,6 @@ export class ReflectPart {
       return;
     }
     this.entry.set(entry);
+    this.track(part);
   }
 }

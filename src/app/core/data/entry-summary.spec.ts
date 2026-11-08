@@ -1,5 +1,5 @@
 import { blankEntry } from './entries-repo';
-import { entryLink, entryPreview } from './entry-summary';
+import { entryLink, entryPreview, isBlank } from './entry-summary';
 import type { Entry } from './models';
 
 const free = (body: string | null): Entry => ({ ...blankEntry('free'), id: 'a', body });
@@ -28,5 +28,14 @@ describe('entry summary', () => {
 
   it('resumes a draft reflection where it stopped', () => {
     expect(entryLink(reflection({ currentStep: 3 }))).toEqual(['/reflect', 'b', '3']);
+  });
+
+  it('calls an entry blank only when nothing was written or chosen', () => {
+    expect(isBlank(free(null))).toBe(true);
+    expect(isBlank(free('  '))).toBe(true);
+    expect(isBlank(free('Words'))).toBe(false);
+    expect(isBlank(reflection({ gratitude: 'Dinner' }))).toBe(false);
+    expect(isBlank(reflection({ patterns: ['reading_minds'] }))).toBe(false);
+    expect(isBlank(reflection({ customFeelings: ['Small'] }))).toBe(false);
   });
 });

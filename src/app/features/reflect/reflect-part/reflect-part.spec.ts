@@ -26,6 +26,7 @@ describe('ReflectPart', () => {
       byId: vi.fn().mockResolvedValue(found ?? undefined),
       create: vi.fn().mockResolvedValue({ ...draft, id: 'created' }),
       save: vi.fn(async (entry: Entry) => entry),
+      remove: vi.fn().mockResolvedValue(undefined),
     };
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: EntriesRepo, useValue: repo }],
@@ -258,6 +259,62 @@ describe('ReflectPart', () => {
       expect(repo.save.mock.calls[0][0]).toMatchObject({
         patterns: ['minimize_magnify', 'jumping_to_conclusions'],
       });
+    });
+  });
+
+  describe('progress', () => {
+    const written: Entry = { ...draft, whatHappened: 'Words' };
+
+    it('remembers the part you’re on in a draft', async () => {
+      const { repo } = await open('r1', '3', written);
+      await vi.waitFor(() =>
+        expect(repo.save.mock.calls.at(-1)?.[0]).toMatchObject({ currentStep: 3 }),
+      );
+    });
+
+    it('follows you back and forward', async () => {
+      const { repo, fixture } = await open('r1', '3', { ...written, currentStep: 3 });
+      expect(repo.save).not.toHaveBeenCalled();
+
+      fixture.componentRef.setInput('part', '2');
+      fixture.detectChanges();
+      await settle(fixture);
+
+      await vi.waitFor(() =>
+        expect(repo.save.mock.calls.at(-1)?.[0]).toMatchObject({ currentStep: 2 }),
+      );
+    });
+
+    it('leaves a finished reflection’s progress alone', async () => {
+      const { repo, fixture } = await open('r1', '3', { ...written, status: 'complete' });
+      fixture.destroy();
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(repo.save).not.toHaveBeenCalled();
+    });
+
+    it('keeps a draft with something in it on Save & exit', async () => {
+      const { repo, fixture } = await open('r1', '1', written);
+      fixture.destroy();
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(repo.remove).not.toHaveBeenCalled();
+    });
+
+    it('removes a draft left completely blank', async () => {
+      const { repo, fixture } = await open('r1', '1');
+      fixture.destroy();
+      await vi.waitFor(() => expect(repo.remove).toHaveBeenCalledWith('r1'));
+    });
+
+    it('keeps a blank draft when going on to its review', async () => {
+      const { repo, router, fixture } = await open('r1', '6', { ...draft, currentStep: 6 });
+      vi.spyOn(router, 'currentNavigation').mockReturnValue({
+        finalUrl: { toString: () => '/reflect/r1/review' },
+      } as ReturnType<Router['currentNavigation']>);
+
+      fixture.destroy();
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(repo.remove).not.toHaveBeenCalled();
     });
   });
 });

@@ -18,3 +18,18 @@ export function entryLink(entry: Entry): string[] {
     ? ['/reflect', entry.id, String(entry.currentStep ?? 1)]
     : ['/entry', entry.id];
 }
+
+/** Nothing has been written or chosen, so there's nothing worth keeping. */
+export function isBlank(entry: Entry): boolean {
+  const texts = [
+    entry.title,
+    entry.body,
+    entry.whatHappened,
+    entry.thoughts,
+    entry.feelingsNote,
+    entry.reframe,
+    entry.gratitude,
+  ];
+  const lists = [entry.feelings, entry.customFeelings, entry.patterns];
+  return texts.every((text) => !text?.trim()) && lists.every((list) => list.length === 0);
+}
