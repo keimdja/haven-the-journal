@@ -1,17 +1,23 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import type { Session } from '@supabase/auth-js';
 
 import { routes } from './app.routes';
 import { Auth } from './core/auth/auth';
+import { EntriesRepo } from './core/data/entries-repo';
 
 describe('routes', () => {
   async function visit(url: string, session: Session | null = {} as Session) {
     const auth = { ready: signal(true), session: signal(session) };
     TestBed.configureTestingModule({
-      providers: [provideRouter(routes), { provide: Auth, useValue: auth }],
+      providers: [
+        provideRouter(routes, withComponentInputBinding()),
+        { provide: Auth, useValue: auth },
+        // Screens stay on their route: the entry is still "loading" for these tests.
+        { provide: EntriesRepo, useValue: { byId: () => new Promise(() => {}) } },
+      ],
     });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(url);

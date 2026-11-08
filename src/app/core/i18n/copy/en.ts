@@ -139,6 +139,21 @@ export const en = {
     title: 'Haven journal',
     exportedOn: 'Exported:',
   },
+  saveStatus: {
+    saving: 'Saving…',
+    saved: 'Saved',
+    offline: 'Offline — saved on this device',
+    error: 'Couldn’t save.',
+    retry: 'Try again',
+  },
+  write: {
+    home: 'Home',
+    done: 'Done',
+    titleLabel: 'Title (optional)',
+    titlePlaceholder: 'Untitled',
+    bodyLabel: 'Your entry',
+    bodyPlaceholder: 'Start wherever you like…',
+  },
   settings: {
     title: 'Settings',
     language: {

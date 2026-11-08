@@ -135,6 +135,21 @@ export const es: Copy = {
     title: 'Diario de Haven',
     exportedOn: 'Exportado:',
   },
+  saveStatus: {
+    saving: 'Guardando…',
+    saved: 'Guardado',
+    offline: 'Sin conexión: guardado en este dispositivo',
+    error: 'No se pudo guardar.',
+    retry: 'Intentar de nuevo',
+  },
+  write: {
+    home: 'Inicio',
+    done: 'Listo',
+    titleLabel: 'Título (opcional)',
+    titlePlaceholder: 'Sin título',
+    bodyLabel: 'Tu entrada',
+    bodyPlaceholder: 'Empieza por donde quieras…',
+  },
   settings: {
     title: 'Ajustes',
     language: {
