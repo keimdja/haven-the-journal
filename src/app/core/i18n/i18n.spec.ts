@@ -3,6 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { I18n } from './i18n';
 
 describe('I18n', () => {
+  // Other specs render the tab bar, whose I18n saves a language; start each test clean.
+  beforeEach(() => localStorage.clear());
   afterEach(() => {
     localStorage.clear();
     vi.restoreAllMocks();

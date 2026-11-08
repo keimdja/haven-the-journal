@@ -18,6 +18,112 @@ export const es: Copy = {
       evening: 'Buenas noches',
     },
   },
+  feelings: {
+    calm: 'Calma',
+    content: 'Satisfacción',
+    grateful: 'Gratitud',
+    hopeful: 'Esperanza',
+    tender: 'Ternura',
+    relieved: 'Alivio',
+    proud: 'Orgullo',
+    tired: 'Cansancio',
+    restless: 'Inquietud',
+    unsure: 'Inseguridad',
+    anxious: 'Ansiedad',
+    sad: 'Tristeza',
+    frustrated: 'Frustración',
+    lonely: 'Soledad',
+  },
+  patterns: {
+    minimize_magnify: {
+      label: 'Achicar lo bueno, agrandar lo malo',
+      example: '“Eso salió bien, pero esto lo arruina todo.”',
+    },
+    predicting_future: { label: 'Predecir el futuro', example: '“Esto va a salir mal.”' },
+    reading_minds: { label: 'Leer mentes', example: '“Seguro piensa que soy…”' },
+    catastrophizing: { label: 'Verlo como una catástrofe', example: '“Esto es un desastre.”' },
+    extreme_thinking: { label: 'Pensar en extremos', example: '“Si se cae, se muere.”' },
+    jumping_to_conclusions: {
+      label: 'Sacar conclusiones apresuradas',
+      example: '“Ya sé lo que esto significa.”',
+    },
+    blaming_myself: { label: 'Culparme de todo', example: '“Todo es mi culpa.”' },
+    blaming_others: { label: 'Culpar a los demás', example: '“Me hicieron esto.”' },
+    not_questioning: { label: 'Aceptar sin cuestionar', example: '“Así son las cosas.”' },
+    feelings_as_facts: {
+      label: 'Confundir emociones con hechos',
+      example: '“Lo siento, así que debe ser verdad.”',
+    },
+    should_statements: {
+      label: 'Pensar en lo que “debió” pasar',
+      example: '“Debió haber salido de otra manera.”',
+    },
+  },
+  reflect: {
+    parts: {
+      whatHappened: {
+        question: '¿Qué pasó?',
+        helper:
+          'Describe los hechos del momento que te molestó o te causó incomodidad. Solo lo que pasó, no lo que significó.',
+        nudges: [
+          '¿Dónde estabas y quién estaba?',
+          '¿Qué pasó justo antes?',
+          '¿Qué se dijo o se hizo?',
+        ],
+      },
+      thoughts: {
+        question: '¿Qué pensé o qué pasó por mi mente?',
+        helper:
+          'Escribe los pensamientos negativos que cruzaron tu mente mientras ocurría. No tienen que tener sentido todavía.',
+        nudges: [
+          '¿Qué fue lo primero que pensaste?',
+          '¿Hubo un pensamiento que volvía una y otra vez?',
+          '¿Qué imaginaste que pensaban los demás?',
+        ],
+      },
+      feelings: {
+        question: '¿Qué sentí?',
+        helper:
+          'Nombra las emociones que sentiste en ese momento. Elige las que quieras o escribe las tuyas.',
+        nudges: [],
+      },
+      patterns: {
+        question: '¿Qué patrón de pensamiento reconozco?',
+        helper: 'Observa la forma de tu pensamiento. Notar uno no significa que algo ande mal.',
+        nudges: [],
+      },
+      reframe: {
+        question: '¿Cómo puedo pensar diferente sobre esta experiencia?',
+        helper:
+          'Piensa en lo que aprendiste de lo que pasó. Está bien si todavía no se te ocurre nada.',
+        nudges: [
+          '¿Qué le dirías a una amistad en la misma situación?',
+          '¿Hay algo que quizás todavía no sabes?',
+          '¿Qué te enseñó esto?',
+        ],
+      },
+      gratitude: {
+        question: '¿Qué agradezco?',
+        helper:
+          'Escribe al menos una cosa que agradeces. Algo puede doler y otra cosa puede seguir siendo buena.',
+        nudges: ['Puede ser algo pequeño. Una persona, un momento, una taza de café.'],
+      },
+    },
+    noPatternFits: '¿Ninguno encaja? Está bien, puedes saltar esta parte.',
+  },
+  entry: {
+    untitled: 'Sin título',
+    draft: 'Borrador',
+    feelings: 'Lo que sentí',
+    kind: {
+      free: 'Escritura libre',
+      reflection: 'Reflexión',
+    },
+  },
+  export: {
+    title: 'Diario de Haven',
+    exportedOn: 'Exportado:',
+  },
   settings: {
     title: 'Ajustes',
     language: {

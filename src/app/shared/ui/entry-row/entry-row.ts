@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { DateStamp } from '../date-stamp/date-stamp';
-import { EntryKind, KindTag } from '../kind-tag/kind-tag';
+import type { EntryKind } from '../../../core/data/models';
+import { KindTag } from '../kind-tag/kind-tag';
 
 /**
  * One entry in a list (Home "Recently", Journal). Put it on the link that opens

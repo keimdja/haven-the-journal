@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/** The two kinds of entry, as stored in `entries.kind`. */
-export type EntryKind = 'free' | 'reflection';
+import type { EntryKind } from '../../../core/data/models';
 
 /**
  * The small caps tag saying what kind of entry this is: "Reflection" in
