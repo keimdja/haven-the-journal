@@ -125,6 +125,7 @@ export const es: Copy = {
   entry: {
     untitled: 'Sin título',
     draft: 'Borrador',
+    ofSix: 'de 6',
     feelings: 'Lo que sentí',
     kind: {
       free: 'Escritura libre',
@@ -161,6 +162,9 @@ export const es: Copy = {
     addOwnHint: '(pulsa Intro)',
     remove: 'Quitar',
     limit: 'Ya son todas las que caben en una entrada.',
+  },
+  journal: {
+    empty: 'Todavía no hay nada aquí. Tus entradas aparecerán a medida que escribas.',
   },
   settings: {
     title: 'Ajustes',

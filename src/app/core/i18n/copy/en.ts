@@ -129,6 +129,7 @@ export const en = {
   entry: {
     untitled: 'Untitled',
     draft: 'Draft',
+    ofSix: 'of 6',
     feelings: 'Feelings',
     kind: {
       free: 'Free writing',
@@ -165,6 +166,9 @@ export const en = {
     addOwnHint: '(press Enter)',
     remove: 'Remove',
     limit: 'That’s as many as one entry can hold.',
+  },
+  journal: {
+    empty: 'Nothing here yet. Your entries will appear as you write.',
   },
   settings: {
     title: 'Settings',

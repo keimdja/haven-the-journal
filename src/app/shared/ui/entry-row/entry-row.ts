@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
 import { DateStamp } from '../date-stamp/date-stamp';
 import type { EntryKind } from '../../../core/data/models';
+import { I18n } from '../../../core/i18n/i18n';
 import { KindTag } from '../kind-tag/kind-tag';
 
 /**
@@ -23,7 +24,7 @@ import { KindTag } from '../kind-tag/kind-tag';
   selector: 'a[app-entry-row]',
   imports: [DateStamp, KindTag],
   template: `
-    <app-date-stamp [date]="date()" [locale]="locale()" />
+    <app-date-stamp [date]="date()" [locale]="i18n.locale()" />
 
     <span
       class="flex min-w-0 flex-1 flex-col gap-1.25 border-b border-hairline pb-3.5 group-last:border-b-0"
@@ -38,7 +39,7 @@ import { KindTag } from '../kind-tag/kind-tag';
               class="inline-flex items-center gap-1.5 text-stamp font-medium text-clay-ink uppercase"
             >
               <span class="size-1.25 rounded-full bg-clay" aria-hidden="true"></span>
-              Draft · {{ part }} of 6
+              {{ i18n.t().entry.draft }} · {{ part }} {{ i18n.t().entry.ofSix }}
             </span>
           }
         </span>
@@ -55,7 +56,7 @@ import { KindTag } from '../kind-tag/kind-tag';
         </span>
       } @else {
         <span class="entry-title font-reflect text-entry-title text-ink-soft">{{
-          untitledLabel()
+          i18n.t().entry.untitled
         }}</span>
       }
     </span>
@@ -80,8 +81,8 @@ export class EntryRow {
   readonly draftPart = input<number | null>();
   /** Titles only, nothing of what was written. */
   readonly hidePreview = input(false);
-  readonly untitledLabel = input('Untitled');
-  readonly locale = input('en');
+
+  protected readonly i18n = inject(I18n);
 
   protected readonly showPreview = computed(() => !this.hidePreview() && !!this.preview()?.trim());
 }

@@ -16,7 +16,10 @@ describe('routes', () => {
         provideRouter(routes, withComponentInputBinding()),
         { provide: Auth, useValue: auth },
         // Screens stay on their route: the entry is still "loading" for these tests.
-        { provide: EntriesRepo, useValue: { byId: () => new Promise(() => {}) } },
+        {
+          provide: EntriesRepo,
+          useValue: { byId: () => new Promise(() => {}), all: signal([]), loaded: signal(false) },
+        },
       ],
     });
     const harness = await RouterTestingHarness.create();

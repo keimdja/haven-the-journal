@@ -1,4 +1,13 @@
-<div class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Journal</h1>
-  <p class="text-ink-soft">Search, kind filter and entries by month.</p>
+<div class="flex flex-col pt-15 lg:pt-16">
+  <header class="flex flex-col gap-4 px-6">
+    <h1 class="font-reflect text-greeting">{{ t().nav.journal }}</h1>
+  </header>
+
+  @for (group of groups(); track group.key) {
+    <app-month-group [group]="group" />
+  } @empty {
+    @if (loaded()) {
+      <p class="px-6 pt-6 text-ink-soft">{{ t().journal.empty }}</p>
+    }
+  }
 </div>
