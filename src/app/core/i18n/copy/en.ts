@@ -19,6 +19,10 @@ export const en = {
     wrongDetails: 'That email and password don’t match.',
     failed: 'Couldn’t reach Haven. Check your connection and try again.',
   },
+  pwa: {
+    updateReady: 'A new version of Haven is ready',
+    reload: 'Reload',
+  },
   titles: {
     home: 'Haven',
     journal: 'Journal · Haven',

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Haven</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <!--
@@ -37,8 +37,15 @@
       src: url('fonts/fraunces-italic.woff2') format('woff2');
     }
   </style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#59664F">
+  <!-- iPhone: Add to Home Screen reads these. The icon has no transparency; iOS rounds it. -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Haven">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
   <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>

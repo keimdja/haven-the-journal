@@ -13,6 +13,10 @@ export const es: Copy = {
     wrongDetails: 'El correo y la contraseña no coinciden.',
     failed: 'No pudimos conectar con Haven. Revisa tu conexión e inténtalo otra vez.',
   },
+  pwa: {
+    updateReady: 'Hay una nueva versión de Haven',
+    reload: 'Recargar',
+  },
   titles: {
     home: 'Haven',
     journal: 'Diario · Haven',
