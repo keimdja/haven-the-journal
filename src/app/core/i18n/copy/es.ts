@@ -72,6 +72,9 @@ export const es: Copy = {
   },
   reflect: {
     saveExit: 'Guardar y salir',
+    nudge: '¿Necesitas una pista?',
+    placeholder: 'Tómate tu tiempo…',
+    savedAsYouWrite: 'Se guarda mientras escribes',
     part: 'Parte',
     progress: 'Progreso de la reflexión',
     back: 'Atrás',

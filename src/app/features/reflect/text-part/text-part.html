@@ -1,0 +1,25 @@
+<div class="flex flex-col gap-2.5">
+  <h1 class="font-reflect text-question">{{ question() }}</h1>
+  <p class="text-prompt text-ink-soft">{{ helper() }}</p>
+</div>
+
+<app-nudges [prompts]="nudges()" (pick)="insert($event)" />
+
+<div
+  class="flex min-h-48 flex-1 rounded-xl border border-page-line bg-paper px-4.5 pt-4.5 pb-3 transition-[border-color,box-shadow] focus-within:border-sage focus-within:ring-3 focus-within:ring-sage-tint"
+>
+  <label class="sr-only" for="reflect-page">{{ question() }}</label>
+  <textarea
+    #page
+    id="reflect-page"
+    class="w-full flex-1 resize-none bg-transparent font-reflect text-writing focus-visible:outline-none"
+    [placeholder]="t().reflect.placeholder"
+    [value]="value()"
+    (input)="value.set(page.value)"
+  ></textarea>
+</div>
+
+<p class="flex items-center gap-1.5 text-xs text-ink-soft">
+  <app-icon class="text-olive" name="check" [size]="13" [strokeWidth]="2" />
+  {{ t().reflect.savedAsYouWrite }}
+</p>

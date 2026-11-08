@@ -1,7 +1,17 @@
 @if (entry(); as entry) {
   @if (current(); as part) {
     <app-reflect-shell [entryId]="entry.id" [step]="part.step">
-      <h1 class="font-reflect text-question">{{ t().reflect.parts[part.key].question }}</h1>
+      @if (part.kind === 'text') {
+        <app-text-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [nudges]="t().reflect.parts[part.key].nudges"
+          [value]="entry[part.key] ?? ''"
+          (valueChange)="setText(part.key, $event)"
+        />
+      } @else {
+        <h1 class="font-reflect text-question">{{ t().reflect.parts[part.key].question }}</h1>
+      }
     </app-reflect-shell>
   }
 }

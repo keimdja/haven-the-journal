@@ -1,0 +1,34 @@
+@if (prompts().length === 1) {
+  <p class="font-reflect text-prompt text-ink-muted italic">{{ prompts()[0] }}</p>
+} @else if (prompts().length > 1) {
+  <button
+    class="flex min-h-11 items-center gap-1.5 py-2.5 text-sm font-medium text-olive"
+    type="button"
+    [attr.aria-expanded]="open()"
+    (click)="open.set(!open())"
+  >
+    <app-icon
+      class="transition-transform"
+      name="chevron-right"
+      [class.rotate-90]="open()"
+      [size]="14"
+      [strokeWidth]="2"
+    />
+    {{ t().reflect.nudge }}
+  </button>
+  @if (open()) {
+    <ul class="mb-1 ml-1.5 flex flex-col gap-0.5 border-l border-segment-ring pl-5">
+      @for (prompt of prompts(); track prompt) {
+        <li>
+          <button
+            class="py-1.75 text-left font-reflect text-[15px] text-ink-muted italic hover:text-ink"
+            type="button"
+            (click)="pick.emit(prompt)"
+          >
+            {{ prompt }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+}

@@ -1,20 +1,31 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
 import { EntriesRepo, blankEntry } from '../../../core/data/entries-repo';
 import type { Entry } from '../../../core/data/models';
-import { ReflectPart } from './reflect-part';
+import { AUTOSAVE_MS, ReflectPart } from './reflect-part';
 
 const draft: Entry = { ...blankEntry('reflection'), id: 'r1' };
 
+/** Lets the screen finish loading: a waiting save, then the entry from the repository. */
+async function settle(fixture: ComponentFixture<ReflectPart>): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve));
+  await fixture.whenStable();
+  fixture.detectChanges();
+}
+
 describe('ReflectPart', () => {
   beforeEach(() => localStorage.clear());
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
 
   async function open(id: string, part: string, found: Entry | null = draft) {
     const repo = {
       byId: vi.fn().mockResolvedValue(found ?? undefined),
       create: vi.fn().mockResolvedValue({ ...draft, id: 'created' }),
+      save: vi.fn(async (entry: Entry) => entry),
     };
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: EntriesRepo, useValue: repo }],
@@ -27,8 +38,7 @@ describe('ReflectPart', () => {
     fixture.componentRef.setInput('id', id);
     fixture.componentRef.setInput('part', part);
     fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await settle(fixture);
 
     const host = fixture.nativeElement as HTMLElement;
     const links = () =>
@@ -36,7 +46,7 @@ describe('ReflectPart', () => {
         a.textContent?.trim(),
         a.getAttribute('href'),
       ]);
-    return { repo, router, host, links };
+    return { repo, router, fixture, host, links };
   }
 
   it('shows the frame around a part', async () => {
@@ -88,5 +98,89 @@ describe('ReflectPart', () => {
     TestBed.resetTestingModule();
     const free = await open('f1', '1', { ...blankEntry('free'), id: 'f1' });
     expect(free.router.navigateByUrl).toHaveBeenCalledWith('/', { replaceUrl: true });
+  });
+
+  describe('text parts', () => {
+    function type(host: HTMLElement, value: string) {
+      const page = host.querySelector('textarea')!;
+      page.value = value;
+      page.dispatchEvent(new Event('input'));
+    }
+
+    it('shows the question, helper and saved note', async () => {
+      const { host } = await open('r1', '1');
+      expect(host.querySelector('h1')!.textContent).toContain('What happened?');
+      expect(host.textContent).toContain('Just what happened, not what it meant.');
+      expect(host.textContent).toContain('Saved as you write');
+    });
+
+    it('shows what was already written', async () => {
+      const { host } = await open('r1', '2', { ...draft, thoughts: 'Earlier words' });
+      expect(host.querySelector('textarea')!.value).toBe('Earlier words');
+    });
+
+    it('saves the answer to its own field once typing pauses', async () => {
+      const { repo, host } = await open('r1', '5');
+      vi.useFakeTimers();
+
+      type(host, 'Another way');
+      await vi.advanceTimersByTimeAsync(AUTOSAVE_MS - 1);
+      expect(repo.save).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(repo.save.mock.calls[0][0]).toMatchObject({ reframe: 'Another way' });
+    });
+
+    it('stores a blank answer as nothing', async () => {
+      const { repo, host } = await open('r1', '1', { ...draft, whatHappened: 'Words' });
+      vi.useFakeTimers();
+
+      type(host, '   ');
+      await vi.advanceTimersByTimeAsync(AUTOSAVE_MS);
+
+      expect(repo.save.mock.calls[0][0]).toMatchObject({ whatHappened: null });
+    });
+
+    it('saves straight away when moving to another part, keeping the answer', async () => {
+      const { repo, fixture, host } = await open('r1', '1');
+      type(host, 'Moved on quickly');
+      fixture.detectChanges(); // as after a real keystroke
+
+      fixture.componentRef.setInput('part', '2');
+      fixture.detectChanges();
+      await settle(fixture);
+
+      expect(repo.save.mock.calls[0][0]).toMatchObject({ whatHappened: 'Moved on quickly' });
+      expect(host.querySelector('h1')!.textContent).toContain('What went through my mind?');
+      expect(host.querySelector('textarea')!.value).toBe('');
+    });
+
+    it('saves on the way out', async () => {
+      const { repo, fixture, host } = await open('r1', '1');
+      type(host, 'Last words');
+      fixture.destroy();
+      await vi.waitFor(() => expect(repo.save).toHaveBeenCalledTimes(1));
+    });
+
+    it('opens nudges and adds one as a new line', async () => {
+      const { fixture, host } = await open('r1', '1', { ...draft, whatHappened: 'Started' });
+      host.querySelector<HTMLButtonElement>('app-nudges button')!.click();
+      fixture.detectChanges();
+
+      const prompts = host.querySelectorAll<HTMLButtonElement>('app-nudges li button');
+      expect(prompts).toHaveLength(3);
+      prompts[1].click();
+      fixture.detectChanges();
+
+      expect(host.querySelector('textarea')!.value).toBe(
+        'Started\n\nWhat happened right before?\n',
+      );
+    });
+
+    it('shows part 6’s single line as a hint, not a button', async () => {
+      const { host } = await open('r1', '6');
+      expect(host.querySelector('app-nudges button')).toBeNull();
+      expect(host.querySelector('app-nudges')!.textContent).toContain('It can be small.');
+    });
   });
 });
