@@ -5,6 +5,7 @@ import type { Session } from '@supabase/auth-js';
 import { Auth } from '../auth/auth';
 import { SUPABASE } from '../auth/supabase';
 import { blankEntry } from './entries-repo';
+import { EntryRow, toRow } from './entry-mapper';
 import { LocalDb, LocalEntry } from './local-db';
 import { OfflineError, Sync } from './sync';
 
@@ -102,5 +103,138 @@ describe('Sync.push', () => {
 
     expect(upsert.mock.calls.map(([rows]) => rows.length)).toEqual([500, 500, 1]);
     expect(await db.entries.where('dirty').equals(1).count()).toBe(0);
+  });
+});
+
+describe('Sync.pull', () => {
+  let db: LocalDb;
+
+  /** A server row, last stamped `updatedAt` by Supabase. */
+  const row = (id: string, updatedAt: string, changes: Partial<EntryRow> = {}): EntryRow => ({
+    ...toRow({ ...blankEntry('free'), id, clientUpdatedAt: updatedAt }),
+    updated_at: updatedAt,
+    ...changes,
+  });
+
+  /**
+   * A fake `entries` table that answers select().gt().order().order().range()
+   * like Supabase: filtered, sorted, then sliced to the requested page.
+   */
+  function setup(serverRows: EntryRow[], { offline = false } = {}) {
+    const requests: { since: string | null; from: number; to: number }[] = [];
+    const select = () => {
+      let since: string | null = null;
+      const query = {
+        gt: (_column: string, value: string) => ((since = value), query),
+        order: () => query,
+        range: async (from: number, to: number) => {
+          requests.push({ since, from, to });
+          if (offline) return { status: 0, error: { message: 'Failed to fetch' }, data: null };
+          const data = serverRows
+            .filter((r) => !since || r.updated_at > since)
+            .sort((a, b) => a.updated_at.localeCompare(b.updated_at) || a.id.localeCompare(b.id))
+            .slice(from, to + 1);
+          return { status: 200, error: null, data };
+        },
+      };
+      return query;
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: SUPABASE, useValue: { db: { from: () => ({ select }) } } },
+        { provide: Auth, useValue: { session: signal({} as Session) } },
+      ],
+    });
+    db = TestBed.inject(LocalDb);
+    return { sync: TestBed.inject(Sync), requests };
+  }
+
+  afterEach(() => db.delete());
+
+  const cursor = async () => (await db.meta.get('lastPulledAt'))?.value;
+
+  it('downloads everything the first time and remembers where it got to', async () => {
+    const { sync, requests } = setup([
+      row('a', '2026-10-20T10:00:00.000Z', { title: 'First' }),
+      row('b', '2026-10-21T10:00:00.000Z'),
+    ]);
+
+    await sync.pull();
+
+    expect(requests).toEqual([{ since: null, from: 0, to: 999 }]);
+    expect(await db.entries.get('a')).toMatchObject({ title: 'First', dirty: 0 });
+    expect(await cursor()).toBe('2026-10-21T10:00:00.000Z');
+  });
+
+  it('pages through more than 1,000 rows until a page comes back short', async () => {
+    const rows = Array.from({ length: 2345 }, (_, i) =>
+      row(
+        `id-${String(i).padStart(4, '0')}`,
+        new Date(Date.UTC(2026, 9, 1) + i * 1000).toISOString(),
+      ),
+    );
+    const { sync, requests } = setup(rows);
+
+    await sync.pull();
+
+    expect(requests.map((r) => r.from)).toEqual([0, 1000, 2000]);
+    expect(await db.entries.count()).toBe(2345);
+    expect(await cursor()).toBe(rows[2344].updated_at);
+  });
+
+  it('asks only for changes since the last pull, minus a minute', async () => {
+    const { sync, requests } = setup([row('a', '2026-10-21T10:00:30.000Z')]);
+    await db.meta.put({ key: 'lastPulledAt', value: '2026-10-21T10:00:00.000Z' });
+
+    await sync.pull();
+
+    expect(requests[0].since).toBe('2026-10-21T09:59:00.000Z');
+    expect(await cursor()).toBe('2026-10-21T10:00:30.000Z');
+  });
+
+  it('keeps newer unpushed local edits and takes everything else', async () => {
+    const { sync } = setup([
+      row('mine', '2026-10-21T10:00:00.000Z', { title: 'Server' }),
+      row('theirs', '2026-10-21T10:00:00.000Z', { title: 'Server' }),
+    ]);
+    await db.entries.bulkAdd([
+      {
+        ...blankEntry('free'),
+        id: 'mine',
+        title: 'Mine',
+        dirty: 1,
+        clientUpdatedAt: '2026-10-21T11:00:00.000Z',
+      },
+      {
+        ...blankEntry('free'),
+        id: 'theirs',
+        title: 'Old',
+        dirty: 1,
+        clientUpdatedAt: '2026-10-21T09:00:00.000Z',
+      },
+    ]);
+
+    await sync.pull();
+
+    expect(await db.entries.get('mine')).toMatchObject({ title: 'Mine', dirty: 1 });
+    expect(await db.entries.get('theirs')).toMatchObject({ title: 'Server', dirty: 0 });
+  });
+
+  it('brings deletions from other devices down as tombstones', async () => {
+    const { sync } = setup([
+      row('a', '2026-10-21T10:00:00.000Z', { deleted_at: '2026-10-21T10:00:00.000Z' }),
+    ]);
+    await db.entries.add({ ...blankEntry('free'), id: 'a', title: 'Gone soon', dirty: 0 });
+
+    await sync.pull();
+
+    expect((await db.entries.get('a'))?.deletedAt).toBe('2026-10-21T10:00:00.000Z');
+  });
+
+  it('leaves the cursor alone when a page fails', async () => {
+    const { sync } = setup([row('a', '2026-10-21T10:00:00.000Z')], { offline: true });
+
+    await expect(sync.pull()).rejects.toBeInstanceOf(OfflineError);
+    expect(await cursor()).toBeUndefined();
   });
 });

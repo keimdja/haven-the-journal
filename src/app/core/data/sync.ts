@@ -3,11 +3,22 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Auth } from '../auth/auth';
 import { SUPABASE } from '../auth/supabase';
 import type { SaveState } from '../../shared/ui/save-status/save-status';
-import { toRow } from './entry-mapper';
+import { EntryRow, fromRow, toRow } from './entry-mapper';
 import { LocalDb, LocalEntry } from './local-db';
+import type { Entry } from './models';
+import { resolve } from './resolve';
 
 /** Rows per request, so a first push of a big journal stays well inside request limits. */
 const PUSH_BATCH = 500;
+
+/** Supabase returns at most 1,000 rows per request; pull in pages of exactly that. */
+const PULL_PAGE = 1000;
+
+/**
+ * Pull a little further back than the last pull, so a row whose transaction
+ * committed slightly late isn't skipped. Pulling a row twice is harmless.
+ */
+const PULL_OVERLAP_MS = 60_000;
 
 /** A request that failed: status 0 means it never reached the server. */
 interface FailedRequest {
@@ -19,8 +30,8 @@ interface FailedRequest {
 export class OfflineError extends Error {}
 
 /**
- * Copies changes between this device and Supabase. This commit adds the push
- * half: every entry marked dirty is uploaded, then marked clean again.
+ * Copies changes between this device and Supabase: `push()` uploads what
+ * changed here, `pull()` downloads what changed elsewhere.
  *
  * `state` drives the save-status line: saving, saved, offline, or error.
  */
@@ -57,6 +68,50 @@ export class Sync {
       this.current.set(error instanceof OfflineError ? 'offline' : 'error');
       throw error;
     }
+  }
+
+  /**
+   * Downloads entries changed on the server since the last pull, oldest change
+   * first, a page at a time until a page comes back short. Each one is kept or
+   * taken by `resolve()`. The cursor (`lastPulledAt`) moves only after the last
+   * page, so an interrupted pull simply starts over next time.
+   */
+  async pull(): Promise<void> {
+    if (!this.auth.session()) return;
+    const cursor = (await this.db.meta.get('lastPulledAt'))?.value as string | undefined;
+    const since = cursor ? new Date(Date.parse(cursor) - PULL_OVERLAP_MS).toISOString() : null;
+
+    let newest = cursor ?? null;
+    for (let from = 0; ; from += PULL_PAGE) {
+      let query = this.supabase.db.from('entries').select('*');
+      if (since) query = query.gt('updated_at', since);
+      const result = await query
+        .order('updated_at')
+        .order('id')
+        .range(from, from + PULL_PAGE - 1);
+      throwIfFailed(result);
+
+      const rows = (result.data ?? []) as EntryRow[];
+      const entries = rows.map(fromRow);
+      await this.apply(entries);
+      for (const entry of entries) {
+        if (!newest || entry.updatedAt! > newest) newest = entry.updatedAt;
+      }
+      if (rows.length < PULL_PAGE) break;
+    }
+
+    if (newest && newest !== cursor) await this.db.meta.put({ key: 'lastPulledAt', value: newest });
+  }
+
+  private async apply(pulled: Entry[]): Promise<void> {
+    await this.db.transaction('rw', this.db.entries, async () => {
+      for (const remote of pulled) {
+        const local = await this.db.entries.get(remote.id);
+        if (resolve(local, remote) === 'take-remote') {
+          await this.db.entries.put({ ...remote, dirty: 0 });
+        }
+      }
+    });
   }
 
   private async markClean(sent: LocalEntry[]): Promise<void> {
