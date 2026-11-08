@@ -8,6 +8,17 @@ import type { ReflectionPartKey } from '../../data/reflection-parts';
  * (No `as const`: the values are plain strings, so Spanish can differ.)
  */
 export const en = {
+  login: {
+    title: 'Sign in',
+    intro: 'Your journal is waiting, just as you left it.',
+    email: 'Email',
+    password: 'Password',
+    submit: 'Continue',
+    submitting: 'Signing in…',
+    missing: 'Enter your email and password.',
+    wrongDetails: 'That email and password don’t match.',
+    failed: 'Couldn’t reach Haven. Check your connection and try again.',
+  },
   nav: {
     label: 'Main',
     home: 'Home',

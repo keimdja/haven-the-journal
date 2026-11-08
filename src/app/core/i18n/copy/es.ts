@@ -2,6 +2,17 @@ import type { Copy } from './en';
 
 /** Every word the app shows, in Spanish. Written for Spanish readers, not translated word for word. */
 export const es: Copy = {
+  login: {
+    title: 'Inicia sesión',
+    intro: 'Tu diario te espera, tal como lo dejaste.',
+    email: 'Correo',
+    password: 'Contraseña',
+    submit: 'Continuar',
+    submitting: 'Entrando…',
+    missing: 'Escribe tu correo y tu contraseña.',
+    wrongDetails: 'El correo y la contraseña no coinciden.',
+    failed: 'No pudimos conectar con Haven. Revisa tu conexión e inténtalo otra vez.',
+  },
   nav: {
     label: 'Principal',
     home: 'Inicio',
