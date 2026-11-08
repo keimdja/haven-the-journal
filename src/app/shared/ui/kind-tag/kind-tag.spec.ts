@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EntryKind, KindTag } from './kind-tag';
+import type { EntryKind } from '../../../core/data/models';
+import { KindTag } from './kind-tag';
 
 function render(kind: EntryKind) {
   const fixture = TestBed.createComponent(KindTag);
