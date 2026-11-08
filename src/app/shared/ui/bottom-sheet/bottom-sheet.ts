@@ -38,6 +38,8 @@ let nextId = 0;
       </div>
     </dialog>
   `,
+  // The host is only a wrapper; keep it out of the parent's layout (no empty flex/grid item).
+  host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BottomSheet {

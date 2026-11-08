@@ -5,10 +5,13 @@ import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
 import { CheckRow } from '../../shared/ui/check-row/check-row';
 import { Chip } from '../../shared/ui/chip/chip';
+import { DateStamp } from '../../shared/ui/date-stamp/date-stamp';
 import { Icon } from '../../shared/ui/icon/icon';
 import { SaveStatus } from '../../shared/ui/save-status/save-status';
+import { SectionLabel } from '../../shared/ui/section-label/section-label';
 import { SegmentedControl } from '../../shared/ui/segmented-control/segmented-control';
 import { SixDots } from '../../shared/ui/six-dots/six-dots';
+import { SettingsRow } from '../../shared/ui/settings-row/settings-row';
 import { StageBar } from '../../shared/ui/stage-bar/stage-bar';
 import { Switch } from '../../shared/ui/switch/switch';
 import { TextField, TextFieldInput } from '../../shared/ui/text-field/text-field';
@@ -27,9 +30,12 @@ import { StyleguideSection } from './styleguide-section';
     Button,
     CheckRow,
     Chip,
+    DateStamp,
     Icon,
     SaveStatus,
+    SectionLabel,
     SegmentedControl,
+    SettingsRow,
     SixDots,
     StageBar,
     StyleguideSection,
@@ -225,6 +231,49 @@ import { StyleguideSection } from './styleguide-section';
       </app-bottom-sheet>
 
       <app-styleguide-section
+        heading="Section label and date stamp"
+        note="12 px caps for section headings; the date column of entry rows, in either language."
+      >
+        <h3 appSectionLabel>Recently</h3>
+        <app-date-stamp [date]="sampleDate" />
+        <app-date-stamp [date]="sampleDate" locale="es" />
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Settings rows"
+        note="Value, chevron, switch and action rows. Rows are separated by the list, not by themselves."
+      >
+        <div class="flex w-full max-w-md flex-col border-y border-hairline">
+          <h3 class="px-6 pt-5.5 pb-2" appSectionLabel>Account</h3>
+          <div class="flex flex-col divide-y divide-hairline-soft">
+            <app-settings-row label="Name" value="K" />
+            <app-settings-row label="Email" value="k@example.com" />
+            <app-settings-row
+              #row
+              label="Hide previews on Home"
+              sub="Show titles only, not what you wrote."
+            >
+              <app-switch [labelledBy]="row.labelId" [(checked)]="hidePreviews" />
+            </app-settings-row>
+            <a app-settings-row href="#" label="Finding support" [chevron]="true"></a>
+            <button
+              app-settings-row
+              label="Export journal"
+              sub="Download every entry as a file you can keep."
+              icon="download"
+            ></button>
+            <button
+              app-settings-row
+              label="Delete account"
+              sub="Permanently removes your account and all of your entries."
+              icon="trash"
+              [danger]="true"
+            ></button>
+          </div>
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
         heading="Icons"
         note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
       >
@@ -266,4 +315,5 @@ export class Styleguide {
   protected readonly hidePreviews = signal(false);
   protected readonly retries = signal(0);
   protected readonly sheetOpen = signal(false);
+  protected readonly sampleDate = new Date(2026, 9, 20, 20, 40);
 }
