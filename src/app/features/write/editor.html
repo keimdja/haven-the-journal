@@ -35,3 +35,22 @@
     ></textarea>
   }
 </main>
+
+@if (entry()) {
+  <!-- Loads just after the page, so the writing area is ready first. -->
+  <section
+    class="max-h-[60dvh] shrink-0 overflow-y-auto border-t border-hairline bg-paper px-5 pt-3 pb-[calc(1.625rem+env(safe-area-inset-bottom))]"
+    [attr.aria-label]="t().feelingPicker.label"
+  >
+    @defer (on idle) {
+      <app-feeling-picker
+        [feelings]="feelings()"
+        [customFeelings]="customFeelings()"
+        (feelingsChange)="editFeelings($event)"
+        (customFeelingsChange)="editCustomFeelings($event)"
+      />
+    } @placeholder {
+      <div class="min-h-11"></div>
+    }
+  </section>
+}

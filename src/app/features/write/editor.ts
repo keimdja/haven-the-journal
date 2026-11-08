@@ -12,10 +12,11 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { EntriesRepo } from '../../core/data/entries-repo';
-import type { Entry } from '../../core/data/models';
+import type { Entry, FeelingKey } from '../../core/data/models';
 import { Sync } from '../../core/data/sync';
 import { formatLongDate, formatTime } from '../../core/i18n/format-date';
 import { I18n } from '../../core/i18n/i18n';
+import { FeelingPicker } from '../../shared/feeling-picker/feeling-picker';
 import { Icon } from '../../shared/ui/icon/icon';
 import { SaveStatus } from '../../shared/ui/save-status/save-status';
 
@@ -32,7 +33,7 @@ export const AUTOSAVE_MS = 500;
  */
 @Component({
   selector: 'app-editor',
-  imports: [Icon, RouterLink, SaveStatus],
+  imports: [FeelingPicker, Icon, RouterLink, SaveStatus],
   templateUrl: './editor.html',
   host: { class: 'mx-auto flex h-dvh w-full max-w-2xl flex-col' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +51,8 @@ export class Editor {
   protected readonly entry = signal<Entry | null>(null);
   protected readonly title = signal('');
   protected readonly body = signal('');
+  protected readonly feelings = signal<FeelingKey[]>([]);
+  protected readonly customFeelings = signal<string[]>([]);
 
   protected readonly when = computed(() => {
     const entry = this.entry();
@@ -88,6 +91,16 @@ export class Editor {
     this.saveSoon();
   }
 
+  protected editFeelings(value: FeelingKey[]): void {
+    this.feelings.set(value);
+    this.saveSoon();
+  }
+
+  protected editCustomFeelings(value: string[]): void {
+    this.customFeelings.set(value);
+    this.saveSoon();
+  }
+
   private saveSoon(): void {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => void this.save(), AUTOSAVE_MS);
@@ -100,8 +113,15 @@ export class Editor {
       if (!entry) return;
       const title = this.title().trim() || null;
       const body = this.body().trim() ? this.body() : null;
-      if (title === entry.title && body === entry.body) return;
-      this.entry.set(await this.repo.save({ ...entry, title, body }));
+      const feelings = this.feelings();
+      const customFeelings = this.customFeelings();
+      const unchanged =
+        title === entry.title &&
+        body === entry.body &&
+        sameItems(feelings, entry.feelings) &&
+        sameItems(customFeelings, entry.customFeelings);
+      if (unchanged) return;
+      this.entry.set(await this.repo.save({ ...entry, title, body, feelings, customFeelings }));
     });
     return this.saves;
   }
@@ -126,9 +146,15 @@ export class Editor {
     this.entry.set(entry);
     this.title.set(entry.title ?? '');
     this.body.set(entry.body ?? '');
+    this.feelings.set(entry.feelings);
+    this.customFeelings.set(entry.customFeelings);
   }
 }
 
 function isUnfelt(entry: Entry): boolean {
   return entry.feelings.length === 0 && entry.customFeelings.length === 0;
+}
+
+function sameItems(a: readonly string[], b: readonly string[]): boolean {
+  return a.length === b.length && a.every((item, i) => item === b[i]);
 }

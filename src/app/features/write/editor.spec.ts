@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { DeferBlockState, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
 import { EntriesRepo, blankEntry } from '../../core/data/entries-repo';
@@ -24,12 +24,14 @@ describe('Editor', () => {
     };
     const sync = { state: signal('saved'), run: vi.fn() };
     TestBed.configureTestingModule({
+      imports: [Editor],
       providers: [
         provideRouter([]),
         { provide: EntriesRepo, useValue: repo },
         { provide: Sync, useValue: sync },
       ],
     });
+    await TestBed.compileComponents(); // needed for the @defer block
     const router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
     vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
@@ -146,5 +148,41 @@ describe('Editor', () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(repo.remove).not.toHaveBeenCalled();
+  });
+
+  it('saves feelings chosen in the picker with the entry', async () => {
+    const { repo, fixture, host } = await open('entry-1');
+    const [picker] = await fixture.getDeferBlocks();
+    await picker.render(DeferBlockState.Complete);
+    fixture.detectChanges();
+
+    const openPicker = Array.from(host.querySelectorAll('section button')).find((button) =>
+      button.textContent?.includes('Add a feeling'),
+    ) as HTMLButtonElement;
+    openPicker.click();
+    fixture.detectChanges();
+
+    vi.useFakeTimers();
+    const calm = Array.from(host.querySelectorAll('button[aria-pressed]')).find(
+      (button) => button.textContent?.trim() === 'Calm',
+    ) as HTMLButtonElement;
+    calm.click();
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_MS);
+
+    expect(repo.save.mock.calls[0][0]).toMatchObject({ feelings: ['calm'] });
+  });
+
+  it('shows the feelings an entry already has', async () => {
+    const felt: Entry = { ...saved, feelings: ['anxious'], customFeelings: ['Small'] };
+    const { fixture, host } = await open('entry-1', felt);
+    const [picker] = await fixture.getDeferBlocks();
+    await picker.render(DeferBlockState.Complete);
+    fixture.detectChanges();
+
+    const section = host.querySelector('section')!;
+    expect(section.getAttribute('aria-label')).toBe('Feelings');
+    expect(section.textContent).toContain('Anxious');
+    expect(section.textContent).toContain('Small');
+    expect(section.textContent).toContain('Edit feelings');
   });
 });
