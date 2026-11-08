@@ -126,6 +126,8 @@ export const es: Copy = {
     untitled: 'Sin título',
     draft: 'Borrador',
     ofSix: 'de 6',
+    edit: 'Editar',
+    patterns: 'Patrones de pensamiento',
     feelings: 'Lo que sentí',
     kind: {
       free: 'Escritura libre',

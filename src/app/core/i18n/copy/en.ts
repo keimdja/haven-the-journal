@@ -130,6 +130,8 @@ export const en = {
     untitled: 'Untitled',
     draft: 'Draft',
     ofSix: 'of 6',
+    edit: 'Edit',
+    patterns: 'Thinking patterns',
     feelings: 'Feelings',
     kind: {
       free: 'Free writing',

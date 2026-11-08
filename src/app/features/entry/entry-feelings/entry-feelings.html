@@ -1,0 +1,8 @@
+<ul class="flex flex-wrap gap-1.5" [attr.aria-label]="t().feelingPicker.label">
+  @for (key of entry().feelings; track key) {
+    <li><app-chip [label]="t().feelings[key]" [weight]="weightOf(key)" /></li>
+  }
+  @for (feeling of entry().customFeelings; track feeling) {
+    <li><app-chip [label]="feeling" /></li>
+  }
+</ul>
