@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
+import { I18n } from '../../core/i18n/i18n';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Icon } from '../../shared/ui/icon/icon';
 import { NAV_ITEMS } from '../nav-items';
@@ -19,4 +20,5 @@ import { NAV_ITEMS } from '../nav-items';
 })
 export class Sidebar {
   protected readonly items = NAV_ITEMS;
+  protected readonly t = inject(I18n).t;
 }
