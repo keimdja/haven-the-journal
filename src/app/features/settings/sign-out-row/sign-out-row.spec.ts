@@ -4,18 +4,6 @@ import { SignOutFlow } from '../../../core/auth/sign-out';
 import { SignOutRow } from './sign-out-row';
 
 describe('SignOutRow', () => {
-  beforeAll(() => {
-    // jsdom has <dialog> but not these; they only need to toggle `open`.
-    const proto = HTMLDialogElement.prototype;
-    proto.showModal ??= function (this: HTMLDialogElement) {
-      this.open = true;
-    };
-    proto.close ??= function (this: HTMLDialogElement) {
-      this.open = false;
-      this.dispatchEvent(new Event('close'));
-    };
-  });
-
   async function setup(unsynced: boolean) {
     const flow = {
       hasUnsyncedChanges: vi.fn().mockResolvedValue(unsynced),

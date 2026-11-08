@@ -1,0 +1,25 @@
+<section
+  class="flex flex-col items-center gap-3.5 border-t border-hairline px-4 pt-7 text-center"
+  [attr.aria-label]="t().home.firstVisit.emptyLabel"
+>
+  <svg
+    class="text-sage"
+    viewBox="0 0 56 56"
+    width="56"
+    height="56"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M28 50V20" />
+    <path d="M28 34c-7 0-11.5-4.5-12.5-11 7 0 11.5 4.5 12.5 11z" />
+    <path d="M28 27c6 0 10-4 11-10-6 0-10 4-11 10z" />
+    <path d="M28 20c0-5 2-8.5 5-11" />
+    <path class="stroke-clay" d="M20 50h16" />
+  </svg>
+  <p class="font-reflect text-[19px] leading-[1.35]">{{ t().home.firstVisit.emptyTitle }}</p>
+  <p class="max-w-70 text-sm leading-[1.55] text-ink-soft">{{ t().home.firstVisit.emptySub }}</p>
+</section>

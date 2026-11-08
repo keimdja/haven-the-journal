@@ -1,4 +1,37 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Entry</h1>
-  <p class="text-ink-soft">One entry, read back, with edit and delete.</p>
-</main>
+@if (entry(); as entry) {
+  <header class="flex items-center justify-between px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+    <a
+      class="flex items-center gap-1.5 p-3 font-medium text-ink no-underline"
+      routerLink="/journal"
+    >
+      <app-icon name="arrow-left" />
+      {{ t().nav.journal }}
+    </a>
+    <a
+      class="flex items-center gap-1.5 px-3.5 py-3 font-medium no-underline"
+      [routerLink]="editLink()"
+    >
+      <app-icon name="pen" [size]="17" />
+      {{ t().entry.edit }}
+    </a>
+  </header>
+
+  <main>
+    <article class="flex flex-col px-7 pt-5">
+      <header class="flex flex-col gap-2.5 border-b border-hairline pb-6.5">
+        <app-kind-tag [kind]="entry.kind" />
+        <h1 class="font-reflect text-[32px] leading-[1.15]">
+          {{ entry.title || t().entry.untitled }}
+        </h1>
+        <p class="text-sm text-ink-soft">{{ when() }}</p>
+      </header>
+
+      @if (entry.kind === 'free') {
+        <app-free-body [entry]="entry" />
+      } @else {
+        <app-reflection-body [entry]="entry" />
+      }
+      <app-delete-entry [entry]="entry" />
+    </article>
+  </main>
+}

@@ -1,0 +1,27 @@
+<section
+  class="flex flex-col gap-2.5 lg:gap-3.5 lg:rounded-page lg:border lg:border-hairline lg:bg-paper lg:p-6"
+  aria-labelledby="resume-heading"
+>
+  <h2 id="resume-heading" appSectionLabel>{{ t().home.resume }}</h2>
+  <div
+    class="flex items-center gap-4 border-b border-hairline pt-1 pb-3.5 lg:flex-col lg:items-start lg:gap-3.5 lg:border-0 lg:p-0"
+  >
+    <div class="flex min-w-0 flex-1 flex-col gap-1.75 lg:gap-3.5">
+      <span class="font-reflect text-entry-title lg:text-[21px]">{{
+        entry().title || t().entry.untitled
+      }}</span>
+      <span class="flex items-center gap-2.5 text-meta text-ink-soft">
+        <app-six-dots [filled]="part()" />
+        <span>
+          {{ t().entry.kind.reflection }} · {{ part() }} {{ t().entry.ofSix }} · {{ weekday() }}
+        </span>
+      </span>
+    </div>
+    <a
+      class="px-1 py-3 text-sm font-semibold no-underline lg:flex lg:h-11 lg:items-center lg:rounded-control lg:bg-olive lg:px-4.5 lg:py-0 lg:text-[15px] lg:text-ivory lg:hover:bg-olive-deep lg:hover:text-ivory"
+      [routerLink]="link()"
+    >
+      {{ t().reflect.continue }}
+    </a>
+  </div>
+</section>

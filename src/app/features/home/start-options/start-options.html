@@ -1,0 +1,34 @@
+<nav
+  class="flex flex-col rounded-page bg-cream p-1.5 lg:grid lg:grid-cols-2 lg:gap-1.5 lg:rounded-2xl"
+  [attr.aria-label]="t().home.startLabel"
+>
+  <a
+    class="flex items-center gap-4 rounded-control px-3.5 py-4 text-ink no-underline transition-colors hover:bg-cream-deep lg:flex-col lg:items-start lg:gap-3.5 lg:rounded-xl lg:bg-paper lg:px-5.5 lg:py-6"
+    routerLink="/write/new"
+  >
+    <app-icon class="text-olive" name="pen" [size]="22" />
+    <span class="flex min-w-0 flex-1 flex-col gap-0.75 lg:gap-1.5">
+      <span class="font-reflect text-option lg:text-[24px]">{{ t().home.write.title }}</span>
+      <span class="text-sm leading-[1.4] text-ink-soft lg:text-[15px] lg:leading-normal">
+        {{ t().home.write.sub }}
+      </span>
+    </span>
+    <app-icon class="text-ink-soft lg:hidden" name="arrow-right" [size]="18" />
+  </a>
+
+  <div class="mx-3.5 h-px bg-divider lg:hidden"></div>
+
+  <a
+    class="flex items-center gap-4 rounded-control px-3.5 py-4 text-ink no-underline transition-colors hover:bg-cream-deep lg:flex-col lg:items-start lg:gap-3.5 lg:rounded-xl lg:px-5.5 lg:py-6"
+    routerLink="/reflect/new/1"
+  >
+    <app-icon class="text-olive" name="six-dots" [size]="22" />
+    <span class="flex min-w-0 flex-1 flex-col gap-0.75 lg:gap-1.5">
+      <span class="font-reflect text-option lg:text-[24px]">{{ t().home.reflect.title }}</span>
+      <span class="text-sm leading-[1.4] text-ink-soft lg:text-[15px] lg:leading-normal">
+        {{ t().home.reflect.sub }}
+      </span>
+    </span>
+    <app-icon class="text-ink-soft lg:hidden" name="arrow-right" [size]="18" />
+  </a>
+</nav>

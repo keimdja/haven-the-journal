@@ -1,4 +1,52 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Your reflection</h1>
-  <p class="text-ink-soft">Read the reflection back, name it and save.</p>
-</main>
+@if (entry(); as entry) {
+  <header
+    class="flex shrink-0 items-center justify-between px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]"
+  >
+    <a
+      class="flex items-center gap-1.5 p-3 font-medium text-ink no-underline"
+      [routerLink]="['/reflect', entry.id, 6]"
+    >
+      <app-icon name="arrow-left" [size]="18" />
+      {{ t().reflect.back }}
+    </a>
+    <p class="p-3 text-meta text-ink-soft">{{ when() }}</p>
+  </header>
+
+  <main class="min-h-0 flex-1 overflow-y-auto px-6 pt-5.5">
+    <div class="flex flex-col gap-2.5 pb-5.5">
+      <h1 class="font-reflect text-question">{{ t().reflect.review.title }}</h1>
+      <p class="text-prompt text-ink-soft">{{ t().reflect.review.intro }}</p>
+    </div>
+
+    <app-text-field
+      class="pb-6"
+      [label]="t().reflect.review.name"
+      [hint]="t().reflect.review.optional"
+      [reflect]="true"
+    >
+      <input
+        #titleInput
+        appInput
+        type="text"
+        [placeholder]="t().entry.untitled"
+        [value]="entry.title ?? ''"
+        (input)="setTitle(titleInput.value)"
+      />
+    </app-text-field>
+
+    <app-review-list [entry]="entry" />
+  </main>
+
+  <footer
+    class="grid shrink-0 auto-cols-fr grid-flow-col gap-2.5 border-t border-hairline bg-ivory px-5 pt-3.5 pb-[calc(1.875rem+env(safe-area-inset-bottom))]"
+  >
+    @if (entry.status === 'draft') {
+      <button appButton="secondary" [wide]="true" (click)="keepAsDraft()">
+        {{ t().reflect.review.keepDraft }}
+      </button>
+    }
+    <button appButton [wide]="true" (click)="saveReflection()">
+      {{ t().reflect.review.save }}
+    </button>
+  </footer>
+}

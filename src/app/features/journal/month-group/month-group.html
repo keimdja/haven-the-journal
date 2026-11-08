@@ -1,0 +1,16 @@
+<section class="flex flex-col">
+  <h2 class="px-6 pt-5.5 pb-1.5" appSectionLabel>{{ group().label }}</h2>
+  @for (entry of group().entries; track entry.id) {
+    <a
+      app-entry-row
+      class="px-6"
+      [routerLink]="link(entry)"
+      [date]="entry.writtenAt"
+      [title]="entry.title"
+      [preview]="preview(entry)"
+      [kind]="entry.kind"
+      [showKind]="true"
+      [draftPart]="entry.status === 'draft' ? entry.currentStep : null"
+    ></a>
+  }
+</section>

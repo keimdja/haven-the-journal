@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
+import { I18n } from '../../../core/i18n/i18n';
 import { Icon } from '../icon/icon';
 import { IconName } from '../icon/icons';
 
@@ -7,17 +8,15 @@ import { IconName } from '../icon/icons';
 export type SaveState = 'saving' | 'saved' | 'offline' | 'error';
 
 interface StateView {
-  readonly text: string;
   readonly icon?: IconName;
   readonly tone: string;
 }
 
-/** English for now; moves to the copy files with i18n. */
 const STATES: Record<SaveState, StateView> = {
-  saving: { text: 'Saving…', tone: 'text-ink-soft' },
-  saved: { text: 'Saved', icon: 'check', tone: 'text-ink-soft' },
-  offline: { text: 'Offline — saved on this device', icon: 'cloud-off', tone: 'text-ink-soft' },
-  error: { text: 'Couldn’t save.', icon: 'alert', tone: 'text-error' },
+  saving: { tone: 'text-ink-soft' },
+  saved: { icon: 'check', tone: 'text-ink-soft' },
+  offline: { icon: 'cloud-off', tone: 'text-ink-soft' },
+  error: { icon: 'alert', tone: 'text-error' },
 };
 
 /**
@@ -42,14 +41,14 @@ const STATES: Record<SaveState, StateView> = {
         aria-hidden="true"
       ></span>
     }
-    {{ view().text }}
+    {{ t().saveStatus[state()] }}
     @if (state() === 'error') {
       <button
         type="button"
         class="-my-2 py-2 font-semibold text-error underline underline-offset-2 hover:text-error-deep"
         (click)="retry.emit()"
       >
-        Try again
+        {{ t().saveStatus.retry }}
       </button>
     }
   `,
@@ -64,5 +63,6 @@ export class SaveStatus {
   readonly state = input.required<SaveState>();
   readonly retry = output<void>();
 
+  protected readonly t = inject(I18n).t;
   protected readonly view = computed(() => STATES[this.state()]);
 }

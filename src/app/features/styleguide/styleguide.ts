@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { TabBar } from '../../layout/tab-bar/tab-bar';
+import type { FeelingKey } from '../../core/data/feelings';
+import { FeelingPicker } from '../../shared/feeling-picker/feeling-picker';
 import { BottomSheet } from '../../shared/ui/bottom-sheet/bottom-sheet';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
@@ -35,6 +37,7 @@ import { StyleguideSection } from './styleguide-section';
     Chip,
     DateStamp,
     EntryRow,
+    FeelingPicker,
     Icon,
     SaveStatus,
     SectionLabel,
@@ -334,6 +337,20 @@ import { StyleguideSection } from './styleguide-section';
       </app-styleguide-section>
 
       <app-styleguide-section
+        heading="Feeling picker"
+        note="Closed in the editor, always open in reflection part 3. Enter adds your own."
+      >
+        <div class="flex w-full max-w-md flex-col gap-8">
+          <app-feeling-picker [(feelings)]="feelings" [(customFeelings)]="customFeelings" />
+          <app-feeling-picker
+            [alwaysOpen]="true"
+            [(feelings)]="feelings"
+            [(customFeelings)]="customFeelings"
+          />
+        </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
         heading="Icons"
         note="24 × 24 grid, 1.6 stroke, coloured by the text colour around them."
       >
@@ -375,5 +392,7 @@ export class Styleguide {
   protected readonly hidePreviews = signal(false);
   protected readonly retries = signal(0);
   protected readonly sheetOpen = signal(false);
+  protected readonly feelings = signal<FeelingKey[]>(['calm', 'anxious']);
+  protected readonly customFeelings = signal<string[]>(['Embarrassed']);
   protected readonly sampleDate = new Date(2026, 9, 20, 20, 40);
 }

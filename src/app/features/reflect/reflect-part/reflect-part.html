@@ -1,4 +1,33 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Reflection part</h1>
-  <p class="text-ink-soft">One of the six reflection questions.</p>
-</main>
+@if (entry(); as entry) {
+  @if (current(); as part) {
+    <app-reflect-shell [entry]="entry" [step]="part.step">
+      @if (part.kind === 'text') {
+        <app-text-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [nudges]="t().reflect.parts[part.key].nudges"
+          [value]="entry[part.key] ?? ''"
+          (valueChange)="setText(part.key, $event)"
+        />
+      } @else if (part.kind === 'feelings') {
+        <app-feelings-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [feelings]="entry.feelings"
+          [customFeelings]="entry.customFeelings"
+          [note]="entry.feelingsNote ?? ''"
+          (feelingsChange)="setFeelings($event)"
+          (customFeelingsChange)="setCustomFeelings($event)"
+          (noteChange)="setNote($event)"
+        />
+      } @else {
+        <app-patterns-part
+          [question]="t().reflect.parts[part.key].question"
+          [helper]="t().reflect.parts[part.key].helper"
+          [patterns]="entry.patterns"
+          (patternsChange)="setPatterns($event)"
+        />
+      }
+    </app-reflect-shell>
+  }
+}

@@ -4,6 +4,7 @@
  *
  *   formatLongDate  Wednesday, October 21    ·  Miércoles, 21 de octubre
  *   formatStamp     { day: '21', weekday: 'Wed' }  ·  { day: '21', weekday: 'mié' }
+ *   formatWeekday   Saturday                 ·  sábado
  *   formatMonth     October 2026             ·  Octubre de 2026
  *   formatTime      9:12 pm                  ·  9:12 p. m.
  */
@@ -35,6 +36,11 @@ export function formatStamp(date: Date, locale: string): { day: string; weekday:
     day: String(date.getDate()),
     weekday: format(date, locale, { weekday: 'short' }).replace('.', ''),
   };
+}
+
+/** The full weekday, in the middle of a sentence: "Saturday", "sábado". */
+export function formatWeekday(date: Date, locale: string): string {
+  return format(date, locale, { weekday: 'long' });
 }
 
 /** Month headings in the Journal list. */

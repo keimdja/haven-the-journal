@@ -1,0 +1,21 @@
+<div
+  class="flex gap-5.5 border-b border-hairline"
+  role="group"
+  [attr.aria-label]="t().journal.filter.label"
+>
+  @for (filter of filters; track filter) {
+    <button
+      class="-mb-px min-h-11 border-b-2 pt-2.5 pb-2.75 text-sm transition-colors"
+      type="button"
+      [class]="
+        value() === filter
+          ? 'border-olive font-semibold text-ink'
+          : 'border-transparent font-medium text-ink-soft hover:text-ink'
+      "
+      [attr.aria-pressed]="value() === filter"
+      (click)="valueChange.emit(filter)"
+    >
+      {{ t().journal.filter[filter] }}
+    </button>
+  }
+</div>

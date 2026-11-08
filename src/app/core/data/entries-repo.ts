@@ -50,8 +50,7 @@ export class EntriesRepo {
   private readonly db = inject(LocalDb);
   private readonly sync = inject(Sync);
 
-  /** Every entry, newest first by the date it was written. */
-  readonly all = toSignal(
+  private readonly entries = toSignal(
     from(
       liveQuery(() =>
         this.db.entries
@@ -62,8 +61,13 @@ export class EntriesRepo {
           .then((entries) => entries.map(toEntry)),
       ),
     ),
-    { initialValue: [] as Entry[] },
   );
+
+  /** Every entry, newest first by the date it was written. */
+  readonly all = computed<Entry[]>(() => this.entries() ?? []);
+
+  /** False for the moment before the first read, so screens don't flash "nothing here". */
+  readonly loaded = computed(() => this.entries() !== undefined);
 
   /** The latest three, for Home. */
   readonly recent = computed(() => this.all().slice(0, 3));
@@ -78,6 +82,12 @@ export class EntriesRepo {
         undefined,
       ),
   );
+
+  /** Every entry as it is right now, for when the live list might be a moment behind. */
+  async allNow(): Promise<Entry[]> {
+    const rows = await this.db.entries.orderBy('writtenAt').reverse().toArray();
+    return rows.filter((entry) => !entry.deletedAt).map(toEntry);
+  }
 
   /** Starts a new entry and stores it, so it survives a reload before the first word. */
   async create(kind: EntryKind): Promise<Entry> {

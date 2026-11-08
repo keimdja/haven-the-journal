@@ -1,0 +1,31 @@
+<ol class="flex flex-col border-t border-hairline">
+  @for (row of rows(); track row.part.key) {
+    <li class="flex gap-3.5 border-b border-hairline py-4 last:border-b-0">
+      <span class="w-3.5 shrink-0 pt-px font-reflect text-base text-olive italic">{{
+        row.part.step
+      }}</span>
+      <div class="flex min-w-0 flex-1 flex-col gap-1">
+        <span class="text-sm font-semibold">{{ t().reflect.parts[row.part.key].question }}</span>
+        @if (row.summary) {
+          <span
+            class="line-clamp-2 text-ink-muted"
+            [class]="row.written ? 'font-reflect text-prompt' : 'text-sm'"
+          >
+            {{ row.summary }}
+          </span>
+        }
+      </div>
+      <a
+        class="shrink-0 self-start pt-0.5 pb-3 pl-2 text-sm font-medium no-underline"
+        [routerLink]="['/reflect', entry().id, row.part.step]"
+        [attr.aria-label]="
+          (row.summary ? t().reflect.review.editPart : t().reflect.review.writePart) +
+          ' ' +
+          row.part.step
+        "
+      >
+        {{ row.summary ? t().reflect.review.edit : t().reflect.review.write }}
+      </a>
+    </li>
+  }
+</ol>

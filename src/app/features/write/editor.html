@@ -1,4 +1,56 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Write</h1>
-  <p class="text-ink-soft">Free writing: title, body and feelings.</p>
+<header
+  class="flex shrink-0 items-center justify-between gap-2 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]"
+>
+  <a class="flex items-center gap-1.5 p-3 font-medium text-ink no-underline" routerLink="/">
+    <app-icon name="arrow-left" />
+    {{ t().write.home }}
+  </a>
+  <app-save-status [state]="sync.state()" (retry)="sync.run()" />
+  <a class="px-3.5 py-3 font-semibold no-underline" routerLink="/">{{ t().write.done }}</a>
+</header>
+
+<main class="flex min-h-0 flex-1 flex-col px-7 pt-4.5">
+  @if (entry()) {
+    <p class="mb-2.5 text-label font-medium text-ink-soft uppercase">{{ when() }}</p>
+
+    <label class="sr-only" for="entry-title">{{ t().write.titleLabel }}</label>
+    <input
+      #titleInput
+      id="entry-title"
+      class="mb-3.5 w-full bg-transparent font-reflect text-[28px] leading-[1.2] focus-visible:outline-none"
+      type="text"
+      [placeholder]="t().write.titlePlaceholder"
+      [value]="title()"
+      (input)="editTitle(titleInput.value)"
+    />
+
+    <label class="sr-only" for="entry-body">{{ t().write.bodyLabel }}</label>
+    <textarea
+      #bodyInput
+      id="entry-body"
+      class="min-h-0 w-full flex-1 resize-none bg-transparent pb-6 font-reflect text-writing focus-visible:outline-none"
+      [placeholder]="t().write.bodyPlaceholder"
+      [value]="body()"
+      (input)="editBody(bodyInput.value)"
+    ></textarea>
+  }
 </main>
+
+@if (entry()) {
+  <!-- Loads just after the page, so the writing area is ready first. -->
+  <section
+    class="max-h-[60dvh] shrink-0 overflow-y-auto border-t border-hairline bg-paper px-5 pt-3 pb-[calc(1.625rem+env(safe-area-inset-bottom))]"
+    [attr.aria-label]="t().feelingPicker.label"
+  >
+    @defer (on idle) {
+      <app-feeling-picker
+        [feelings]="feelings()"
+        [customFeelings]="customFeelings()"
+        (feelingsChange)="editFeelings($event)"
+        (customFeelingsChange)="editCustomFeelings($event)"
+      />
+    } @placeholder {
+      <div class="min-h-11"></div>
+    }
+  </section>
+}

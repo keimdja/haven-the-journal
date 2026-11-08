@@ -1,0 +1,34 @@
+@for (part of parts(); track part.key) {
+  <section class="flex flex-col gap-2.5 border-b border-hairline py-6.5 last:border-b-0">
+    <h2 class="flex items-baseline gap-2.5 text-label font-medium text-ink-soft uppercase">
+      <span class="font-reflect text-base tracking-normal text-olive normal-case italic">{{
+        part.step
+      }}</span>
+      {{ t().reflect.parts[part.key].question }}
+    </h2>
+
+    @switch (part.kind) {
+      @case ('feelings') {
+        <app-entry-feelings [entry]="entry()" />
+        @if (entry().feelingsNote) {
+          <p class="font-reflect text-[17px] leading-[1.7] whitespace-pre-wrap">
+            {{ entry().feelingsNote }}
+          </p>
+        }
+      }
+      @case ('patterns') {
+        <ul class="flex flex-col gap-1" [attr.aria-label]="t().entry.patterns">
+          @for (key of entry().patterns; track key) {
+            <li class="flex items-baseline gap-2.5">
+              <span class="h-px w-3.5 shrink-0 -translate-y-1 bg-sage" aria-hidden="true"></span>
+              {{ t().patterns[key].label }}
+            </li>
+          }
+        </ul>
+      }
+      @default {
+        <p class="font-reflect text-[17px] leading-[1.7] whitespace-pre-wrap">{{ text(part) }}</p>
+      }
+    }
+  </section>
+}

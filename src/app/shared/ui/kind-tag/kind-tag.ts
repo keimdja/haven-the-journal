@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import type { EntryKind } from '../../../core/data/models';
+import { I18n } from '../../../core/i18n/i18n';
 
 /**
  * The small caps tag saying what kind of entry this is: "Reflection" in
  * lavender with its 3 × 2 dot motif, or a plain "Free writing".
- * English for now; moves to the copy files with i18n.
  */
 @Component({
   selector: 'app-kind-tag',
@@ -16,9 +16,9 @@ import type { EntryKind } from '../../../core/data/models';
           <span class="size-0.75 rounded-full bg-lavender-dot"></span>
         }
       </span>
-      Reflection
+      {{ t().entry.kind.reflection }}
     } @else {
-      Free writing
+      {{ t().entry.kind.free }}
     }
   `,
   host: {
@@ -30,5 +30,6 @@ import type { EntryKind } from '../../../core/data/models';
 })
 export class KindTag {
   readonly kind = input.required<EntryKind>();
+  protected readonly t = inject(I18n).t;
   protected readonly dots = Array.from({ length: 6 });
 }

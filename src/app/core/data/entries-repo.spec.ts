@@ -98,4 +98,14 @@ describe('EntriesRepo', () => {
     await until(() => repo.all().length === 3);
     expect(repo.recent()[0].title).toBe('2026-10-18');
   });
+
+  it('reads every live entry straight from the database', async () => {
+    const kept = await repo.create('free');
+    const gone = await repo.create('free');
+    await repo.remove(gone.id);
+
+    const entries = await repo.allNow();
+    expect(entries.map((entry) => entry.id)).toEqual([kept.id]);
+    expect('dirty' in entries[0]).toBe(false);
+  });
 });

@@ -1,0 +1,20 @@
+<button
+  app-settings-row
+  icon="download"
+  [label]="busy() ? t().settings.journal.exporting : t().settings.journal.export"
+  [sub]="t().settings.journal.exportSub"
+  [disabled]="busy()"
+  (click)="start()"
+></button>
+
+@if (result(); as result) {
+  <p
+    class="flex flex-wrap items-baseline gap-x-2 px-6 pb-3.5 text-meta text-ink-soft"
+    role="status"
+  >
+    {{ result === 'complete' ? t().settings.journal.exported : t().settings.journal.exportedLocal }}
+    <button class="min-h-11 font-medium text-olive" type="button" (click)="downloadReadable()">
+      {{ t().settings.journal.readable }}
+    </button>
+  </p>
+}

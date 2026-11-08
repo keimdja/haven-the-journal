@@ -1,0 +1,5 @@
+<p class="font-reflect text-[17px] leading-[1.7] whitespace-pre-wrap">{{ entry().body }}</p>
+
+@if (hasFeelings()) {
+  <app-entry-feelings [entry]="entry()" />
+}

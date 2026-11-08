@@ -16,21 +16,6 @@ class Host {
   readonly open = signal(false);
 }
 
-/**
- * jsdom has <dialog> but not showModal()/close(), so stand in for them: they
- * only toggle `open` and fire "close", which is all the component relies on.
- */
-beforeAll(() => {
-  const proto = HTMLDialogElement.prototype;
-  proto.showModal ??= function (this: HTMLDialogElement) {
-    this.open = true;
-  };
-  proto.close ??= function (this: HTMLDialogElement) {
-    this.open = false;
-    this.dispatchEvent(new Event('close'));
-  };
-});
-
 describe('BottomSheet', () => {
   function setup() {
     const fixture = TestBed.createComponent(Host);

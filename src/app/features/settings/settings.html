@@ -1,6 +1,71 @@
-<div class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Settings</h1>
-  <p class="text-ink-soft">Language, account, privacy and your journal.</p>
-</div>
+<div class="flex flex-col gap-1.5 pt-15 lg:pt-16">
+  <h1 class="mx-6 mb-3.5 font-reflect text-greeting">{{ t().settings.title }}</h1>
 
-<app-sign-out-row />
+  <section class="flex flex-col gap-3 px-6 pb-5.5" aria-labelledby="settings-language">
+    <h2 id="settings-language" class="mt-3.5" appSectionLabel>
+      {{ t().settings.language.heading }}
+    </h2>
+    <app-segmented-control
+      [label]="t().settings.language.heading"
+      [options]="languages"
+      [value]="lang()"
+      (valueChange)="setLanguage($event)"
+    />
+    <p class="text-meta text-ink-soft">{{ t().settings.language.note }}</p>
+  </section>
+
+  <section class="flex flex-col border-t border-hairline" aria-labelledby="settings-account">
+    <h2 id="settings-account" class="px-6 pt-5.5 pb-2" appSectionLabel>
+      {{ t().settings.account.heading }}
+    </h2>
+    <div class="flex flex-col divide-y divide-hairline-soft">
+      <app-settings-row #nameRow [label]="t().settings.account.name">
+        <input
+          #nameInput
+          class="min-w-0 flex-1 bg-transparent text-right text-ink-soft placeholder:text-placeholder focus-visible:outline-none"
+          type="text"
+          autocomplete="name"
+          maxlength="60"
+          [attr.aria-labelledby]="nameRow.labelId"
+          [placeholder]="t().settings.account.namePlaceholder"
+          [value]="name()"
+          (input)="editName(nameInput.value)"
+        />
+      </app-settings-row>
+      <app-settings-row [label]="t().settings.account.email" [value]="email()" />
+    </div>
+  </section>
+
+  <section class="flex flex-col border-t border-hairline" aria-labelledby="settings-privacy">
+    <h2 id="settings-privacy" class="px-6 pt-5.5 pb-2" appSectionLabel>
+      {{ t().settings.privacy.heading }}
+    </h2>
+    <app-settings-row
+      #hideRow
+      [label]="t().settings.privacy.hidePreviews"
+      [sub]="t().settings.privacy.hidePreviewsSub"
+    >
+      <app-switch
+        [labelledBy]="hideRow.labelId"
+        [checked]="hidePreviews()"
+        (checkedChange)="setHidePreviews($event)"
+      />
+    </app-settings-row>
+  </section>
+
+  <section class="flex flex-col border-t border-hairline" aria-labelledby="settings-journal">
+    <h2 id="settings-journal" class="px-6 pt-5.5 pb-2" appSectionLabel>
+      {{ t().settings.journal.heading }}
+    </h2>
+    <div class="flex flex-col divide-y divide-hairline-soft">
+      <app-export-row />
+      <app-sign-out-row />
+    </div>
+  </section>
+
+  <p
+    class="mx-6 mt-4.5 border-t border-hairline pt-4.5 pb-6 font-reflect text-prompt text-ink-muted italic"
+  >
+    {{ t().settings.care }}
+  </p>
+</div>
