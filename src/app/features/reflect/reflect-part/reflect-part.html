@@ -1,4 +1,7 @@
-<main class="flex flex-col gap-2 px-6 py-12">
-  <h1 class="font-reflect text-greeting">Reflection part</h1>
-  <p class="text-ink-soft">One of the six reflection questions.</p>
-</main>
+@if (entry(); as entry) {
+  @if (current(); as part) {
+    <app-reflect-shell [entryId]="entry.id" [step]="part.step">
+      <h1 class="font-reflect text-question">{{ t().reflect.parts[part.key].question }}</h1>
+    </app-reflect-shell>
+  }
+}

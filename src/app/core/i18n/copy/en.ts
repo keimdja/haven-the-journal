@@ -77,6 +77,12 @@ export const en = {
     },
   } satisfies Record<PatternKey, { label: string; example: string }>,
   reflect: {
+    saveExit: 'Save & exit',
+    part: 'Part',
+    progress: 'Reflection progress',
+    back: 'Back',
+    skip: 'Skip for now',
+    continue: 'Continue',
     parts: {
       whatHappened: {
         question: 'What happened?',

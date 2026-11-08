@@ -71,6 +71,12 @@ export const es: Copy = {
     },
   },
   reflect: {
+    saveExit: 'Guardar y salir',
+    part: 'Parte',
+    progress: 'Progreso de la reflexión',
+    back: 'Atrás',
+    skip: 'Omitir por ahora',
+    continue: 'Continuar',
     parts: {
       whatHappened: {
         question: '¿Qué pasó?',
