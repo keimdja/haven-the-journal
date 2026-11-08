@@ -9,8 +9,14 @@ import { formatStamp } from '../../../core/i18n/format-date';
 @Component({
   selector: 'app-date-stamp',
   template: `
-    <time class="flex w-8.5 flex-col items-center pt-0.5" [attr.datetime]="isoDate()">
-      <span class="font-reflect text-[24px] leading-none">{{ stamp().day }}</span>
+    <time
+      class="flex w-8.5 flex-col items-center pt-0.5"
+      [class]="large() ? 'lg:w-11 lg:items-start lg:pt-0' : ''"
+      [attr.datetime]="isoDate()"
+    >
+      <span class="font-reflect text-[24px] leading-none" [class.lg:text-[30px]]="large()">{{
+        stamp().day
+      }}</span>
       <span class="mt-1 text-stamp text-ink-soft uppercase">{{ stamp().weekday }}</span>
     </time>
   `,
@@ -21,6 +27,8 @@ export class DateStamp {
   /** When the entry was written. */
   readonly date = input.required<Date | string>();
   readonly locale = input('en');
+  /** Bigger from 1024 px, for Desktop Home. */
+  readonly large = input(false);
 
   private readonly value = computed(() => new Date(this.date()));
 

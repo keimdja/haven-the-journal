@@ -16,6 +16,7 @@ import { KindTag } from '../kind-tag/kind-tag';
  * - Without one: the opening words in italic Fraunces, standing in for the title.
  * - `hidePreview` (the Settings privacy option) shows titles only.
  * - `draftPart` adds "Draft · 3 of 6" for unfinished reflections.
+ * - `large` is Desktop Home's roomier row: bigger type from 1024 px, with the kind tag.
  *
  * Rows underline their title on hover and separate themselves with a hairline,
  * except the last one in the list.
@@ -24,14 +25,18 @@ import { KindTag } from '../kind-tag/kind-tag';
   selector: 'a[app-entry-row]',
   imports: [DateStamp, KindTag],
   template: `
-    <app-date-stamp [date]="date()" [locale]="i18n.locale()" />
+    <app-date-stamp [date]="date()" [locale]="i18n.locale()" [large]="large()" />
 
     <span
       class="flex min-w-0 flex-1 flex-col gap-1.25 border-b border-hairline pb-3.5 group-last:border-b-0"
+      [class]="large() ? 'lg:gap-1.5 lg:pb-5' : ''"
     >
-      @if (showKind() || draftPart()) {
-        <span class="flex items-center gap-2">
-          @if (showKind()) {
+      @if (showKind() || draftPart() || large()) {
+        <span
+          class="flex items-center gap-2"
+          [class]="large() && !showKind() && !draftPart() ? 'max-lg:hidden' : ''"
+        >
+          @if (showKind() || large()) {
             <app-kind-tag [kind]="kind()" />
           }
           @if (draftPart(); as part) {
@@ -46,9 +51,17 @@ import { KindTag } from '../kind-tag/kind-tag';
       }
 
       @if (title()) {
-        <span class="entry-title font-reflect text-entry-title">{{ title() }}</span>
+        <span
+          class="entry-title font-reflect text-entry-title"
+          [class]="large() ? 'lg:text-option lg:leading-[1.3]' : ''"
+          >{{ title() }}</span
+        >
         @if (showPreview()) {
-          <span class="line-clamp-2 text-sm leading-[1.45] text-ink-soft">{{ preview() }}</span>
+          <span
+            class="line-clamp-2 text-sm leading-[1.45] text-ink-soft"
+            [class]="large() ? 'lg:text-[15px] lg:leading-[1.55]' : ''"
+            >{{ preview() }}</span
+          >
         }
       } @else if (showPreview()) {
         <span class="entry-title line-clamp-2 font-reflect text-[17px] leading-[1.4] italic">
@@ -65,6 +78,8 @@ import { KindTag } from '../kind-tag/kind-tag';
     class:
       'group flex gap-4.5 pt-3.5 text-ink no-underline [&:hover_.entry-title]:underline ' +
       '[&:hover_.entry-title]:decoration-taupe-soft [&:hover_.entry-title]:underline-offset-4',
+    '[class.lg:gap-7]': 'large()',
+    '[class.lg:pt-5]': 'large()',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -81,6 +96,7 @@ export class EntryRow {
   readonly draftPart = input<number | null>();
   /** Titles only, nothing of what was written. */
   readonly hidePreview = input(false);
+  readonly large = input(false);
 
   protected readonly i18n = inject(I18n);
 

@@ -93,7 +93,8 @@ describe('Home', () => {
 
     expect(row.getAttribute('href')).toBe('/entry/a');
     expect(row.textContent).toContain('The words');
-    expect(row.querySelector('app-kind-tag')).toBeNull();
+    // The kind tag is desktop-only here, as on the boards.
+    expect(row.querySelector('app-kind-tag')!.parentElement!.className).toContain('max-lg:hidden');
     expect(host.querySelector('section a')!.getAttribute('href')).toBe('/journal');
   });
 

@@ -32,6 +32,7 @@ export const es: Copy = {
       emptySub: 'Todo lo que escribas es solo tuyo. Vuelve cuando quieras.',
     },
     resume: 'Retoma donde lo dejaste',
+    resumeNote: 'Vuelve a tus reflexiones sin terminar cuando quieras. Te esperan.',
     recent: 'Recientes',
     seeAll: 'Ver todo',
     sub: '¿Qué tienes en mente hoy? Puedes empezar por donde quieras.',

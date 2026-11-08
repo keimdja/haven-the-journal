@@ -16,6 +16,7 @@ import { EntryRow } from './entry-row';
       [showKind]="showKind()"
       [draftPart]="draftPart()"
       [hidePreview]="hidePreview()"
+      [large]="large()"
     ></a>
   `,
 })
@@ -26,6 +27,7 @@ class Host {
   readonly showKind = signal(false);
   readonly draftPart = signal<number | null>(null);
   readonly hidePreview = signal(false);
+  readonly large = signal(false);
 }
 
 describe('EntryRow', () => {
@@ -71,5 +73,13 @@ describe('EntryRow', () => {
     });
     expect(row.querySelector('app-kind-tag')!.textContent).toContain('Reflection');
     expect(row.textContent).toContain('Draft · 3 of 6');
+  });
+
+  it('is roomier from 1024 px when large, with the kind tag only there', () => {
+    const { row } = setup((host) => host.large.set(true));
+    expect(row.className).toContain('lg:gap-7');
+    expect(row.querySelector('.entry-title')!.className).toContain('lg:text-option');
+    expect(row.querySelector('time')!.className).toContain('lg:w-11');
+    expect(row.querySelector('app-kind-tag')!.parentElement!.className).toContain('max-lg:hidden');
   });
 });

@@ -1,40 +1,53 @@
+<!-- One order for phones. From 1024 px: intro and recent on the left, resume card on the right. -->
 <div
-  class="flex flex-col gap-7.5 px-6 pt-15 lg:gap-10 lg:px-[clamp(1.5rem,6vw,5.5rem)] lg:pt-16 lg:pb-18"
+  class="flex flex-col gap-7.5 px-6 pt-15 lg:grid lg:max-w-[calc(65rem+2*clamp(1.5rem,6vw,5.5rem))] lg:grid-cols-[2fr_1fr] lg:grid-rows-[auto_1fr] lg:gap-x-18 lg:gap-y-10 lg:px-[clamp(1.5rem,6vw,5.5rem)] lg:pt-16 lg:pb-18"
 >
-  <header class="flex flex-col gap-2.5 lg:gap-3">
-    @if (firstVisit()) {
-      <app-brand-mark class="mb-3.5 lg:hidden" size="md" [tagline]="true" />
-    } @else {
-      <app-brand-mark class="mb-3 lg:hidden" />
-    }
-    <p class="text-label font-medium text-ink-soft uppercase">{{ date() }}</p>
-    @if (firstVisit()) {
-      <h1 class="font-reflect text-[36px] leading-[1.12] lg:text-display">
-        {{ t().home.firstVisit.titleLine1 }}<br />
-        <em class="font-light italic">{{ t().home.firstVisit.titleLine2 }}</em>
-      </h1>
-      <p class="text-base leading-[1.55] text-ink-soft lg:text-[17px]">
-        {{ t().home.firstVisit.sub }}
-      </p>
-    } @else {
-      <h1 class="font-reflect text-greeting lg:text-display">{{ hello() }}</h1>
-      <p class="text-base text-ink-soft lg:text-[17px]">{{ t().home.sub }}</p>
-    }
-  </header>
+  <div class="flex min-w-0 flex-col gap-7.5 lg:col-start-1 lg:gap-10">
+    <header class="flex flex-col gap-2.5 lg:gap-3">
+      @if (firstVisit()) {
+        <app-brand-mark class="mb-3.5 lg:hidden" size="md" [tagline]="true" />
+      } @else {
+        <app-brand-mark class="mb-3 lg:hidden" />
+      }
+      <p class="text-label font-medium text-ink-soft uppercase">{{ date() }}</p>
+      @if (firstVisit()) {
+        <h1 class="font-reflect text-[36px] leading-[1.12] lg:text-display">
+          {{ t().home.firstVisit.titleLine1 }}<br />
+          <em class="font-light italic">{{ t().home.firstVisit.titleLine2 }}</em>
+        </h1>
+        <p class="text-base leading-[1.55] text-ink-soft lg:text-[17px]">
+          {{ t().home.firstVisit.sub }}
+        </p>
+      } @else {
+        <h1 class="font-reflect text-greeting lg:text-display">{{ hello() }}</h1>
+        <p class="text-base text-ink-soft lg:text-[17px]">{{ t().home.sub }}</p>
+      }
+    </header>
 
-  <app-start-options />
+    <app-start-options />
 
-  @if (firstVisit()) {
-    <app-empty-state />
-  }
+    @if (firstVisit()) {
+      <app-empty-state />
+    }
+  </div>
 
   @if (draft(); as draft) {
-    <app-resume-card [entry]="draft" />
+    <aside
+      class="flex min-w-0 flex-col gap-9 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:pt-1.5"
+    >
+      <app-resume-card [entry]="draft" />
+      <p class="hidden px-1 font-reflect text-[17px] leading-[1.55] text-ink-muted italic lg:block">
+        {{ t().home.resumeNote }}
+      </p>
+    </aside>
   }
 
   @if (recent().length > 0) {
-    <section class="flex flex-col gap-1" aria-labelledby="recent-heading">
-      <div class="flex items-baseline justify-between">
+    <section
+      class="flex min-w-0 flex-col gap-1 lg:col-start-1 lg:gap-0"
+      aria-labelledby="recent-heading"
+    >
+      <div class="flex items-baseline justify-between lg:border-b lg:border-hairline lg:pb-1.5">
         <h2 id="recent-heading" appSectionLabel>{{ t().home.recent }}</h2>
         <a class="py-2.5 text-sm font-medium no-underline" routerLink="/journal">
           {{ t().home.seeAll }}
@@ -50,6 +63,7 @@
             [preview]="preview(entry)"
             [kind]="entry.kind"
             [hidePreview]="hidePreviews()"
+            [large]="true"
           ></a>
         }
       </div>

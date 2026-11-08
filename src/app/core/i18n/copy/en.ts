@@ -38,6 +38,7 @@ export const en = {
       emptySub: 'Everything you write stays private to you. Come back whenever you’re ready.',
     },
     resume: 'Pick up where you left off',
+    resumeNote: 'Come back to unfinished reflections whenever you’re ready. They’ll wait.',
     recent: 'Recently',
     seeAll: 'See all',
     sub: 'What’s on your mind today? You can start anywhere.',
