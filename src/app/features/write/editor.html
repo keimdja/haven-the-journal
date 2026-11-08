@@ -21,7 +21,7 @@
       type="text"
       [placeholder]="t().write.titlePlaceholder"
       [value]="title()"
-      (input)="title.set(titleInput.value)"
+      (input)="editTitle(titleInput.value)"
     />
 
     <label class="sr-only" for="entry-body">{{ t().write.bodyLabel }}</label>
@@ -31,7 +31,7 @@
       class="min-h-0 w-full flex-1 resize-none bg-transparent pb-6 font-reflect text-writing focus-visible:outline-none"
       [placeholder]="t().write.bodyPlaceholder"
       [value]="body()"
-      (input)="body.set(bodyInput.value)"
+      (input)="editBody(bodyInput.value)"
     ></textarea>
   }
 </main>

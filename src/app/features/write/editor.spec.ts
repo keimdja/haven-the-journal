@@ -5,7 +5,7 @@ import { provideRouter, Router } from '@angular/router';
 import { EntriesRepo, blankEntry } from '../../core/data/entries-repo';
 import type { Entry } from '../../core/data/models';
 import { Sync } from '../../core/data/sync';
-import { Editor } from './editor';
+import { AUTOSAVE_MS, Editor } from './editor';
 
 const saved: Entry = {
   ...blankEntry('free', new Date(2026, 9, 21, 21, 12)),
@@ -19,6 +19,8 @@ describe('Editor', () => {
     const repo = {
       byId: vi.fn().mockResolvedValue(found ?? undefined),
       create: vi.fn().mockResolvedValue({ ...saved, id: 'created' }),
+      save: vi.fn(async (entry: Entry) => entry),
+      remove: vi.fn().mockResolvedValue(undefined),
     };
     const sync = { state: signal('saved'), run: vi.fn() };
     TestBed.configureTestingModule({
@@ -37,10 +39,20 @@ describe('Editor', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    return { repo, router, host: fixture.nativeElement as HTMLElement };
+    return { repo, router, fixture, host: fixture.nativeElement as HTMLElement };
   }
 
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  function type(field: HTMLInputElement | HTMLTextAreaElement, value: string) {
+    field.value = value;
+    field.dispatchEvent(new Event('input'));
+  }
+  const body = (host: HTMLElement) => host.querySelector('textarea')!;
+  const title = (host: HTMLElement) => host.querySelector<HTMLInputElement>('#entry-title')!;
 
   it('shows the entry’s date, title and words', async () => {
     const { host } = await open('entry-1');
@@ -70,5 +82,69 @@ describe('Editor', () => {
   it('goes Home if the entry doesn’t exist', async () => {
     const { router } = await open('missing', null);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/', { replaceUrl: true });
+  });
+
+  it('saves once typing pauses, with everything typed so far', async () => {
+    const { repo, host } = await open('entry-1');
+    vi.useFakeTimers();
+
+    type(body(host), 'One');
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_MS - 1);
+    type(body(host), 'One two');
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_MS - 1);
+    expect(repo.save).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(repo.save).toHaveBeenCalledTimes(1);
+    expect(repo.save.mock.calls[0][0]).toMatchObject({ body: 'One two' });
+  });
+
+  it('doesn’t save when nothing actually changed', async () => {
+    const { repo, host } = await open('entry-1');
+    vi.useFakeTimers();
+
+    type(title(host), 'A quiet Wednesday  ');
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_MS);
+    expect(repo.save).not.toHaveBeenCalled();
+  });
+
+  it('saves what’s pending when you leave, without waiting', async () => {
+    const { repo, fixture, host } = await open('entry-1');
+    type(body(host), 'Last words');
+
+    fixture.destroy();
+
+    await vi.waitFor(() => expect(repo.save).toHaveBeenCalledTimes(1));
+    expect(repo.save.mock.calls[0][0]).toMatchObject({ body: 'Last words' });
+    expect(repo.remove).not.toHaveBeenCalled();
+  });
+
+  it('saves when the app goes to the background', async () => {
+    const { repo, host } = await open('entry-1');
+    type(body(host), 'Before the phone locks');
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+
+    document.dispatchEvent(new Event('visibilitychange'));
+
+    await vi.waitFor(() => expect(repo.save).toHaveBeenCalledTimes(1));
+  });
+
+  it('removes an entry left completely blank', async () => {
+    const blank = { ...blankEntry('free'), id: 'blank' };
+    const { repo, fixture } = await open('blank', blank);
+
+    fixture.destroy();
+
+    await vi.waitFor(() => expect(repo.remove).toHaveBeenCalledWith('blank'));
+  });
+
+  it('keeps a blank-looking entry that has feelings', async () => {
+    const felt: Entry = { ...blankEntry('free'), id: 'felt', feelings: ['calm'] };
+    const { repo, fixture } = await open('felt', felt);
+
+    fixture.destroy();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    expect(repo.remove).not.toHaveBeenCalled();
   });
 });
