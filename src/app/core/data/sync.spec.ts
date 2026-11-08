@@ -238,3 +238,78 @@ describe('Sync.pull', () => {
     expect(await cursor()).toBeUndefined();
   });
 });
+
+describe('Sync profile', () => {
+  let db: LocalDb;
+  const session = { user: { id: 'user-1' } } as Session;
+
+  /** A fake `profiles` table: update().eq() and select().eq().maybeSingle(). */
+  function setup(serverRow: object | null = null) {
+    const update = vi.fn();
+    const table = {
+      update: (values: object) => ({
+        eq: async (column: string, id: string) => (
+          update(values, column, id),
+          { status: 204, error: null }
+        ),
+      }),
+      select: () => ({
+        eq: () => ({ maybeSingle: async () => ({ status: 200, error: null, data: serverRow }) }),
+      }),
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: SUPABASE, useValue: { db: { from: () => table } } },
+        { provide: Auth, useValue: { session: signal(session) } },
+      ],
+    });
+    db = TestBed.inject(LocalDb);
+    return { sync: TestBed.inject(Sync), update };
+  }
+
+  afterEach(() => db.delete());
+
+  const profile = { displayName: 'K', language: 'es', hidePreviews: true } as const;
+
+  it('uploads changed settings to your row, then clears the flag', async () => {
+    const { sync, update } = setup();
+    await db.meta.bulkPut([
+      { key: 'profile', value: profile },
+      { key: 'profileDirty', value: true },
+    ]);
+
+    await sync.pushProfile();
+
+    expect(update).toHaveBeenCalledWith(
+      { display_name: 'K', language: 'es', hide_previews: true },
+      'id',
+      'user-1',
+    );
+    expect(await db.meta.get('profileDirty')).toBeUndefined();
+  });
+
+  it('skips the upload when nothing changed here', async () => {
+    const { sync, update } = setup();
+    await db.meta.put({ key: 'profile', value: profile });
+    await sync.pushProfile();
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('downloads your settings into the local cache', async () => {
+    const { sync } = setup({ display_name: 'K', language: 'es', hide_previews: true });
+    await sync.pullProfile();
+    expect((await db.meta.get('profile'))?.value).toEqual(profile);
+  });
+
+  it('keeps settings changed here that haven’t gone up yet', async () => {
+    const { sync } = setup({ display_name: 'Old', language: 'en', hide_previews: false });
+    await db.meta.bulkPut([
+      { key: 'profile', value: profile },
+      { key: 'profileDirty', value: true },
+    ]);
+
+    await sync.pullProfile();
+
+    expect((await db.meta.get('profile'))?.value).toEqual(profile);
+  });
+});

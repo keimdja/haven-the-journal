@@ -22,6 +22,8 @@ describe('Sync.run', () => {
     const calls: string[] = [];
     const push = vi.spyOn(sync, 'push').mockImplementation(async () => void calls.push('push'));
     const pull = vi.spyOn(sync, 'pull').mockImplementation(async () => void calls.push('pull'));
+    vi.spyOn(sync, 'pushProfile').mockImplementation(async () => void calls.push('pushProfile'));
+    vi.spyOn(sync, 'pullProfile').mockImplementation(async () => void calls.push('pullProfile'));
     return { sync, calls, push, pull };
   }
 
@@ -31,10 +33,10 @@ describe('Sync.run', () => {
     await db.delete();
   });
 
-  it('pushes, then pulls, then says saved', async () => {
+  it('pushes, then pulls, entries then profile, then says saved', async () => {
     const { sync, calls } = setup();
     await sync.run();
-    expect(calls).toEqual(['push', 'pull']);
+    expect(calls).toEqual(['push', 'pushProfile', 'pull', 'pullProfile']);
     expect(sync.state()).toBe('saved');
   });
 

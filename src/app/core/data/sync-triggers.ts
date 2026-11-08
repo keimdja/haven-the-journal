@@ -19,8 +19,8 @@ import { Auth } from '../auth/auth';
  *
  * Saving an entry asks for a run too, through `Sync.requestSoon()`.
  *
- * Sync (and the local database under it) is loaded on first use rather than
- * with the app, so it doesn't add to the first download.
+ * Sync, the profile store and the local database under them are loaded on
+ * first use rather than with the app, so they don't add to the first download.
  */
 export function provideSyncTriggers(): EnvironmentProviders {
   return provideAppInitializer(() => {
@@ -29,7 +29,15 @@ export function provideSyncTriggers(): EnvironmentProviders {
     const document = inject(DOCUMENT);
     const window = document.defaultView;
 
-    const run = () => void import('./sync').then(({ Sync }) => injector.get(Sync).run());
+    // The profile store starts with sync, so a language chosen on another device
+    // is applied here as soon as it's pulled.
+    const run = () =>
+      void Promise.all([import('./sync'), import('./profile-store')]).then(
+        ([{ Sync }, { ProfileStore }]) => {
+          injector.get(ProfileStore);
+          return injector.get(Sync).run();
+        },
+      );
 
     let userId: string | undefined;
     effect(() => {

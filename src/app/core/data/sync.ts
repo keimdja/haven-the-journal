@@ -6,7 +6,7 @@ import { SUPABASE } from '../auth/supabase';
 import type { SaveState } from '../../shared/ui/save-status/save-status';
 import { EntryRow, fromRow, toRow } from './entry-mapper';
 import { LocalDb, LocalEntry } from './local-db';
-import type { Entry } from './models';
+import type { Entry, Profile } from './models';
 import { resolve } from './resolve';
 
 /** Rows per request, so a first push of a big journal stays well inside request limits. */
@@ -36,7 +36,7 @@ export class OfflineError extends Error {}
 /**
  * Copies changes between this device and Supabase: `push()` uploads what
  * changed here, `pull()` downloads what changed elsewhere, and `run()` does
- * both, in that order. `requestSoon()` runs it shortly after a save.
+ * both, in that order, for your entries and then your profile. `requestSoon()` runs it shortly after a save.
  *
  * `state` drives the save-status line: saving, saved, offline, or error.
  * Your words are always safe on this device first; "offline" only means they
@@ -92,7 +92,9 @@ export class Sync {
     }
     try {
       await this.push();
+      await this.pushProfile();
       await this.pull();
+      await this.pullProfile();
       this.current.set('saved');
     } catch (error) {
       const offline = error instanceof OfflineError;
@@ -103,6 +105,48 @@ export class Sync {
 
   private isOnline(): boolean {
     return this.window?.navigator.onLine ?? true;
+  }
+
+  /**
+   * Uploads your settings if they changed here. The flag is cleared only if
+   * they weren't changed again during the upload.
+   */
+  async pushProfile(): Promise<void> {
+    const userId = this.auth.session()?.user.id;
+    if (!userId || !(await this.db.meta.get('profileDirty'))?.value) return;
+    const profile = (await this.db.meta.get('profile'))?.value as Profile | undefined;
+    if (!profile) return;
+
+    const result = await this.supabase.db
+      .from('profiles')
+      .update(toProfileRow(profile))
+      .eq('id', userId);
+    throwIfFailed(result);
+
+    await this.db.transaction('rw', this.db.meta, async () => {
+      const now = (await this.db.meta.get('profile'))?.value;
+      if (JSON.stringify(now) === JSON.stringify(profile))
+        await this.db.meta.delete('profileDirty');
+    });
+  }
+
+  /** Downloads your settings, unless there are changes here still waiting to go up. */
+  async pullProfile(): Promise<void> {
+    const userId = this.auth.session()?.user.id;
+    if (!userId) return;
+    const result = await this.supabase.db
+      .from('profiles')
+      .select('display_name, language, hide_previews')
+      .eq('id', userId)
+      .maybeSingle();
+    throwIfFailed(result);
+
+    const row = result.data as ProfileRow | null;
+    if (!row) return;
+    await this.db.transaction('rw', this.db.meta, async () => {
+      if ((await this.db.meta.get('profileDirty'))?.value) return;
+      await this.db.meta.put({ key: 'profile', value: fromProfileRow(row) });
+    });
   }
 
   /**
@@ -191,4 +235,27 @@ function throwIfFailed({ status, error }: FailedRequest): void {
   if (!error) return;
   if (status === 0) throw new OfflineError(error.message);
   throw new Error(error.message);
+}
+
+/** A row of the `profiles` table: the columns sync reads and writes. */
+interface ProfileRow {
+  display_name: string;
+  language: Profile['language'];
+  hide_previews: boolean;
+}
+
+function toProfileRow(profile: Profile): ProfileRow {
+  return {
+    display_name: profile.displayName,
+    language: profile.language,
+    hide_previews: profile.hidePreviews,
+  };
+}
+
+function fromProfileRow(row: ProfileRow): Profile {
+  return {
+    displayName: row.display_name,
+    language: row.language,
+    hidePreviews: row.hide_previews,
+  };
 }
