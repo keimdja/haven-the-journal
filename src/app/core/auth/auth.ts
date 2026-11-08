@@ -44,8 +44,12 @@ export class Auth {
     return error.code === 'invalid_credentials' ? 'wrong-details' : 'failed';
   }
 
-  /** Ends the session. Clearing this device's journal comes with safe sign-out. */
+  /**
+   * Ends the session on this device. `local` removes it before any network
+   * request, so signing out works offline. Screens use SignOutFlow, which also
+   * erases this device's journal.
+   */
   async signOut(): Promise<void> {
-    await this.supabase.auth.signOut();
+    await this.supabase.auth.signOut({ scope: 'local' });
   }
 }

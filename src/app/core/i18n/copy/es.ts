@@ -158,5 +158,11 @@ export const es: Copy = {
     },
     care: 'Haven es un espacio para la reflexión personal. No sustituye la atención profesional.',
     signOut: 'Cerrar sesión',
+    signOutWarning: {
+      heading: '¿Cerrar sesión antes de sincronizar?',
+      body: 'Parte de lo que escribiste todavía no ha llegado a tu cuenta. Si cierras sesión ahora, se borrará de este dispositivo y no se podrá recuperar.',
+      stay: 'Seguir con la sesión',
+      confirm: 'Cerrar sesión de todos modos',
+    },
   },
 };

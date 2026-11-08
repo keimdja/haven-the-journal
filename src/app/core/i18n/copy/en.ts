@@ -162,6 +162,12 @@ export const en = {
     },
     care: 'Haven is a space for personal reflection. It isn’t a substitute for professional care.',
     signOut: 'Sign out',
+    signOutWarning: {
+      heading: 'Sign out before this has synced?',
+      body: 'Some of what you wrote hasn’t reached your account yet. Signing out now erases it from this device, and it can’t be recovered.',
+      stay: 'Stay signed in',
+      confirm: 'Sign out anyway',
+    },
   },
 };
 

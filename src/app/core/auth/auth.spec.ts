@@ -77,6 +77,6 @@ describe('Auth', () => {
   it('signs out', async () => {
     const { auth, client } = setup();
     await auth.signOut();
-    expect(client.auth.signOut).toHaveBeenCalled();
+    expect(client.auth.signOut).toHaveBeenCalledWith({ scope: 'local' });
   });
 });

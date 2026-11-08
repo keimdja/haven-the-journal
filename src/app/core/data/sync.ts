@@ -84,6 +84,11 @@ export class Sync {
     this.timer = setTimeout(() => void this.run(), SYNC_DELAY_MS);
   }
 
+  /** Forgets a sync waiting to start, e.g. when signing out. */
+  cancelPending(): void {
+    clearTimeout(this.timer);
+  }
+
   private async runOnce(): Promise<void> {
     if (!this.auth.session()) return;
     if (!this.isOnline()) {
