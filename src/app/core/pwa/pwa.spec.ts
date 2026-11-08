@@ -1,16 +1,19 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { Subject } from 'rxjs';
 
+import { Auth } from '../auth/auth';
 import { Pwa } from './pwa';
 
 describe('Pwa', () => {
-  function setup(isEnabled = true) {
+  function setup(isEnabled = true, user = signal<object | null>(null)) {
     const versionUpdates = new Subject<VersionEvent>();
     const unrecoverable = new Subject<unknown>();
     const checkForUpdate = vi.fn().mockResolvedValue(false);
     TestBed.configureTestingModule({
       providers: [
+        { provide: Auth, useValue: { user } },
         {
           provide: SwUpdate,
           useValue: { isEnabled, versionUpdates, unrecoverable, checkForUpdate },
@@ -19,7 +22,7 @@ describe('Pwa', () => {
     });
     const pwa = TestBed.inject(Pwa);
     const reload = vi.spyOn(pwa, 'reload').mockImplementation(() => {});
-    return { pwa, versionUpdates, unrecoverable, checkForUpdate, reload };
+    return { pwa, versionUpdates, unrecoverable, checkForUpdate, reload, user };
   }
 
   afterEach(() => vi.restoreAllMocks());
@@ -71,5 +74,63 @@ describe('Pwa', () => {
     document.dispatchEvent(new Event('visibilitychange'));
     expect(pwa.updateReady()).toBe(false);
     expect(checkForUpdate).not.toHaveBeenCalled();
+  });
+
+  describe('persistent storage', () => {
+    function stubStorage(alreadyPersisted = false) {
+      const storage = {
+        persisted: vi.fn().mockResolvedValue(alreadyPersisted),
+        persist: vi.fn().mockResolvedValue(true),
+      };
+      Object.defineProperty(navigator, 'storage', { configurable: true, value: storage });
+      return storage;
+    }
+    const flush = async () => {
+      TestBed.tick();
+      await new Promise((resolve) => setTimeout(resolve));
+    };
+
+    afterEach(() => {
+      delete (navigator as unknown as Record<string, unknown>)['storage'];
+    });
+
+    it('waits until you’re signed in, then asks', async () => {
+      const storage = stubStorage();
+      const { user } = setup();
+      await flush();
+      expect(storage.persist).not.toHaveBeenCalled();
+
+      user.set({ id: 'u1' });
+      await flush();
+      expect(storage.persist).toHaveBeenCalledTimes(1);
+    });
+
+    it('asks only once, even if the session changes', async () => {
+      const storage = stubStorage();
+      const { user } = setup(true, signal<object | null>({ id: 'u1' }));
+      await flush();
+      user.set({ id: 'u1', refreshed: true });
+      await flush();
+      expect(storage.persist).toHaveBeenCalledTimes(1);
+    });
+
+    it('doesn’t ask if storage is already kept', async () => {
+      const storage = stubStorage(true);
+      setup(true, signal<object | null>({ id: 'u1' }));
+      await flush();
+      expect(storage.persist).not.toHaveBeenCalled();
+    });
+
+    it('works where the browser has no storage API', async () => {
+      setup(true, signal<object | null>({ id: 'u1' }));
+      await expect(flush()).resolves.toBeUndefined();
+    });
+
+    it('still asks when update checks are off', async () => {
+      const storage = stubStorage();
+      setup(false, signal<object | null>({ id: 'u1' }));
+      await flush();
+      expect(storage.persist).toHaveBeenCalledTimes(1);
+    });
   });
 });
