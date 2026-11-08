@@ -115,6 +115,19 @@ export const en = {
     } satisfies Record<ReflectionPartKey, { question: string; helper: string; nudges: string[] }>,
     noPatternFits: 'None of these fit? That’s fine, you can skip this one.',
   },
+  entry: {
+    untitled: 'Untitled',
+    draft: 'Draft',
+    feelings: 'Feelings',
+    kind: {
+      free: 'Free writing',
+      reflection: 'Reflection',
+    },
+  },
+  export: {
+    title: 'Haven journal',
+    exportedOn: 'Exported:',
+  },
   settings: {
     title: 'Settings',
     language: {

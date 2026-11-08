@@ -111,6 +111,19 @@ export const es: Copy = {
     },
     noPatternFits: '¿Ninguno encaja? Está bien, puedes saltar esta parte.',
   },
+  entry: {
+    untitled: 'Sin título',
+    draft: 'Borrador',
+    feelings: 'Lo que sentí',
+    kind: {
+      free: 'Escritura libre',
+      reflection: 'Reflexión',
+    },
+  },
+  export: {
+    title: 'Diario de Haven',
+    exportedOn: 'Exportado:',
+  },
   settings: {
     title: 'Ajustes',
     language: {
