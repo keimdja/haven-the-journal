@@ -171,6 +171,8 @@ export const es: Copy = {
       reflection: 'Reflexiones',
     },
     empty: 'Todavía no hay nada aquí. Tus entradas aparecerán a medida que escribas.',
+    search: 'Busca en tus entradas',
+    noMatches: 'Nada coincide con eso. Prueba otra palabra o muestra todas tus entradas.',
   },
   settings: {
     title: 'Ajustes',

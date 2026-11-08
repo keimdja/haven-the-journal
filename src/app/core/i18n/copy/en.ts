@@ -175,6 +175,8 @@ export const en = {
       reflection: 'Reflections',
     },
     empty: 'Nothing here yet. Your entries will appear as you write.',
+    search: 'Search your entries',
+    noMatches: 'Nothing matches that. Try another word, or show all your entries.',
   },
   settings: {
     title: 'Settings',

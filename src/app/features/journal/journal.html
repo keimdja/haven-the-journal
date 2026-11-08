@@ -1,6 +1,15 @@
 <div class="flex flex-col pt-15 lg:pt-16">
   <header class="flex flex-col gap-4 px-6">
     <h1 class="font-reflect text-greeting">{{ t().nav.journal }}</h1>
+    <app-text-field variant="search" [label]="t().journal.search">
+      <input
+        #searchInput
+        appInput
+        type="search"
+        [placeholder]="t().journal.search"
+        (input)="search(searchInput.value)"
+      />
+    </app-text-field>
     <app-kind-filter [value]="filter()" (valueChange)="setFilter($event)" />
   </header>
 
@@ -8,7 +17,9 @@
     <app-month-group [group]="group" />
   } @empty {
     @if (loaded()) {
-      <p class="px-6 pt-6 text-ink-soft">{{ t().journal.empty }}</p>
+      <p class="px-6 pt-6 text-ink-soft">
+        {{ hasEntries() ? t().journal.noMatches : t().journal.empty }}
+      </p>
     }
   }
 </div>
