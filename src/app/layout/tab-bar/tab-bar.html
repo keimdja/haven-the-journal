@@ -1,0 +1,21 @@
+<nav
+  class="grid grid-cols-3 gap-1 border-t border-hairline bg-ivory px-3 pt-2 pb-[calc(1.125rem+env(safe-area-inset-bottom))]"
+  aria-label="Main"
+>
+  @for (item of items; track item.path) {
+    <a
+      class="group flex h-[54px] flex-col items-center justify-center gap-1 text-label font-medium tracking-normal text-ink-soft no-underline hover:text-ink aria-[current=page]:font-semibold aria-[current=page]:text-olive"
+      [routerLink]="item.path"
+      routerLinkActive
+      ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: item.exact }"
+    >
+      <span
+        class="flex h-7 w-13 items-center justify-center rounded-lg transition-colors group-aria-[current=page]:bg-sage-tint"
+      >
+        <app-icon [name]="item.icon" />
+      </span>
+      {{ item.label }}
+    </a>
+  }
+</nav>

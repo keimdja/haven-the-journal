@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
+import { Sidebar } from '../../layout/sidebar/sidebar';
+import { TabBar } from '../../layout/tab-bar/tab-bar';
 import { BottomSheet } from '../../shared/ui/bottom-sheet/bottom-sheet';
 import { BrandMark } from '../../shared/ui/brand-mark/brand-mark';
 import { Button } from '../../shared/ui/button/button';
@@ -38,10 +40,12 @@ import { StyleguideSection } from './styleguide-section';
     SectionLabel,
     SegmentedControl,
     SettingsRow,
+    Sidebar,
     SixDots,
     StageBar,
     StyleguideSection,
     Switch,
+    TabBar,
     TextField,
     TextFieldInput,
   ],
@@ -313,6 +317,20 @@ import { StyleguideSection } from './styleguide-section';
             [hidePreview]="true"
           ></a>
         </div>
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Tab bar"
+        note="Mobile navigation (below 1024 px). Nothing is current here; open Home, Journal or Settings to see the active pill."
+      >
+        <app-tab-bar class="w-full max-w-[390px]" />
+      </app-styleguide-section>
+
+      <app-styleguide-section
+        heading="Sidebar"
+        note="Desktop navigation (1024 px and up), shown here at its real height."
+      >
+        <app-sidebar class="h-[520px]" />
       </app-styleguide-section>
 
       <app-styleguide-section
